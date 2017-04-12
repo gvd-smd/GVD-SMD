@@ -1,14 +1,32 @@
-//Function that creates the treemap.
 var qtdAtributos = 0;
 var rotulo = 0;
-var json = "2015.1-sete.json";
+var json = "json-sete/2015.1-sete.json";
 var isGraphic = ""
 var questionNum = 0;
+var semestre="20151";
+var jsonQuest ="";
+var jsonlido = false;
+var selectApagado = false;
 
-function mudaSemestre1(){
-            if (qtdAtributos==0) json = "json-sete/2015.1-sete.json";
-            if (qtdAtributos==1) json = "json-completo/2015.1-completo.json";
-        
+function addOptions(){
+	console.log(jsonlido+""+selectApagado)
+	if(jsonlido && selectApagado){
+		jsonlido = false;
+		selectApagado = false;
+		var list = document.getElementById("selectQuestion");
+	    for(var i =0;i< jsonQuest.children.length;i++){
+			var opt = document.createElement('option');
+		    opt.value = i;
+		    opt.innerHTML = jsonQuest.children[i].name;
+		    list.appendChild(opt);
+		}
+		if(questionNum < jsonQuest.children.length){
+			list.value = questionNum;
+		}
+		atualGraphi();
+	}
+}
+function atualGraphi(){
 	switch(isGraphic){
 		case "treemap":
 			treemap();
@@ -20,86 +38,96 @@ function mudaSemestre1(){
 			sunburst();
 			break;
 		case "barGraphic":
-			barGraphic(questionNum);
+			barGraphic();
 			break;
 		case "pizzaGraphic":
-			pizzaGraphic(questionNum);
+			pizzaGraphic();
 			break;
 		default:
 			break;
+	}	
+}
+function mudaSemestre(myRadio){
+	if(myRadio != null){
+		semestre = myRadio.value
+		console.log("Radio Button"+ semestre)
 	}
+	var oldjson = json;
+	if(semestre=="20151"){
+        if (qtdAtributos==0) json = "json-sete/2015.1-sete.json";
+        else if (qtdAtributos==1) json = "json-completo/2015.1-completo.json";
+    }else if(semestre=="20152"){
+        if (qtdAtributos==0) json = "json-sete/2015.2-sete.json";
+        else if (qtdAtributos==1) json = "json-completo/2015.2-completo.json";
+    }else if(semestre=="20161"){
+        if (qtdAtributos==0) json = "json-sete/2016.1-sete.json";
+        else if (qtdAtributos==1) json = "json-completo/2016.1-completo.json";
+    }
+    if(oldjson != json){
+    	var s = "";
+    	loadJSON(json,
+         function(data) { jsonQuest = data ;jsonlido=true;addOptions();},
+        function(xhr) { console.error(xhr); });
+        var list = document.getElementById("selectQuestion");
+        var indexchecked=0;
+		while (list.hasChildNodes()) {  
+
+		    list.removeChild(list.firstChild);
+		}
+		selectApagado=true;
+		addOptions();
+    }else{
+    	atualGraphi()
+    }
+}
+function loadJSON(path, success, error){
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function()
+    {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                if (success)
+                    success(JSON.parse(xhr.responseText));
+            } else {
+                if (error)
+                    error(xhr);
+            }
+        }
+    };
+    xhr.open("GET", path, true);
+    xhr.send();
 }
 
-function mudaSemestre2(){
-            if (qtdAtributos==0) json = "json-sete/2015.2-sete.json";
-            if (qtdAtributos==1) json = "json-completo/2015.2-completo.json";
-        
-	switch(isGraphic){
-		case "treemap":
-			treemap();
-			break;
-		case "tifoldTree":
-			tifoldTree();
-			break;
-		case "sunburst":
-			sunburst();
-			break;
-		case "barGraphic":
-			barGraphic(questionNum);
-			break;
-		case "pizzaGraphic":
-			pizzaGraphic(questionNum);
-			break;
-		default:
-			break;
-	}
-}
-
-function mudaSemestre3(){
-            if (qtdAtributos==0) json = "json-sete/2016.1-sete.json";
-            if (qtdAtributos==1) json = "json-completo/2016.1-completo.json";
-        
-	switch(isGraphic){
-		case "treemap":
-			treemap();
-			break;
-		case "tifoldTree":
-			tifoldTree();	
-			break;
-		case "sunburst":
-			sunburst();
-			break;
-		case "barGraphic":
-			barGraphic(questionNum);
-			break;
-		case "pizzaGraphic":
-			pizzaGraphic(questionNum);
-			break;
-		default:
-			break;
-	}
-}
-
-
-
-function treemap(){
-	isGraphic = "treemap";
+function ControldivGraf(){
 	var element = document.getElementById("graphic");
 	if(element != null){
 		element.remove();
 	}
-	var tree = document.getElementById("treeStuff");
-	if(tree.style.display != 'block'){
-		tree.style.display = 'block';
+	var notree=false;
+
+	var tree = document.getElementById("selectQuestion");
+	if(isGraphic == "barGraphic" || isGraphic == "pizzaGraphic"){
+		notree=true;
+		if(tree.style.display != 'block'){
+			tree.style.display = 'block';
+		}
+		tree = document.getElementById("treeStuff");
+		if(tree.style.display != 'none'){
+			tree.style.display = 'none';
+		}
+	}else{
+		if(tree.style.display != 'none'){
+			tree.style.display = 'none';
+		}
+		tree = document.getElementById("treeStuff");
+		if(tree.style.display != 'block'){
+			tree.style.display = 'block';
+		}
 	}
-	var tree = document.getElementById("selectQuestionBar");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
-	var tree = document.getElementById("selectQuestionPizza");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
+}
+function treemap(){
+	isGraphic = "treemap";
+	ControldivGraf();
 	var radio = document.getElementById('size');
 	radio.checked = true;
 	var margin = {top: 40, right: 10, bottom: 10, left: 10},
@@ -115,76 +143,43 @@ function treemap(){
 
 	var div = d3.select("body").append("div")
 	.attr("id", "graphic")
+	.attr("class", "treeMap")/*
 	.style("position", "relative")
 	.style("width", (width + margin.left + margin.right) + "px")
 	.style("height", (height + margin.top + margin.bottom) + "px")
 	.style("left", margin.left + "px")
-	.style("top", margin.top + "px");
-
+	.style("top", margin.top + "px");*/
+	console.log("Até Agora ok");
 	d3.json(json, function(error, root) {
-            
-            if (rotulo==0) {
-                //alert(rotulo);
-                var node = div.datum(root).selectAll(".node")
-		.data(treemap.nodes)
-		.enter().append("div")
-		.attr("class", "node")
-		.call(position)
-		.style("background", function(d) { return d.children ? color(d.name) : null; })
-//		.text(function(d) { return d.children ? null : d.size; });
-//		.text(function(d) { return d.children ? null : d.name+'-'+d.size; });
-		.text(function(d) { return d.children ? null : d.parent.name+'-'+d.name+'-'+d.size; });
-            }
-            if (rotulo==1) {
-                //alert(rotulo);
-                var node = div.datum(root).selectAll(".node")
-		.data(treemap.nodes)
-		.enter().append("div")
-		.attr("class", "node")
-		.call(position)
-		.style("background", function(d) { return d.children ? color(d.name) : null; })
-		.text(function(d) { return d.children ? null : d.name+'-'+d.size; });
-            }
-                if (rotulo==2) {
-                //alert(rotulo);
-                var node = div.datum(root).selectAll(".node")
-		.data(treemap.nodes)
-		.enter().append("div")
-		.attr("class", "node")
-		.call(position)
-		.style("background", function(d) { return d.children ? color(d.name) : null; })
-		.text(function(d) { return d.children ? null : d.size; });
-            }
-                if (rotulo==3) {
-                //alert(rotulo);
-                var node = div.datum(root).selectAll(".node")
-		.data(treemap.nodes)
-		.enter().append("div")
-		.attr("class", "node")
-		.call(position)
-		.style("background", function(d) { return d.children ? color(d.name) : null; })
-		.text(function(d) { return d.children ? null : d.name; });
-            }
-                if (rotulo==4) {
-                //alert(rotulo);
-                var node = div.datum(root).selectAll(".node")
-		.data(treemap.nodes)
-		.enter().append("div")
-		.attr("class", "node")
-		.call(position)
-		.style("background", function(d) { return d.children ? color(d.name) : null; })
-		.text(function(d) { return d.children ? null : d.parent.name; });
-            }
-                if (rotulo==5) {
-                //alert(rotulo);
-                var node = div.datum(root).selectAll(".node")
+		if (error) throw error;
+		var node = div.datum(root).selectAll(".node")
 		.data(treemap.nodes)
 		.enter().append("div")
 		.attr("class", "node")
 		.call(position)
 		.style("background", function(d) { return d.children ? color(d.name) : null; })
 		.text(function(d) { return d.children ? null : ""; });
-            }
+
+		console.log("Entrou");
+        if (rotulo==0) { 
+        	node.append("text")
+			.text(function(d) { return d.children ? null : d.parent.name+'-'+d.name+'-'+d.size; });
+        }else if (rotulo==1) {
+        	node.append("text")
+			.text(function(d) { return d.children ? null : d.name+'-'+d.size; });
+        }else if (rotulo==2) {
+        	node.append("text")
+			.text(function(d) { return d.children ? null : d.size; });
+        }else if (rotulo==3) {
+        	node.append("text")
+			.text(function(d) { return d.children ? null : d.name; });
+        }else if (rotulo==4) {
+        	node.append("text")
+			.text(function(d) { return d.children ? null : d.parent.name; });
+        }else if (rotulo==5) {
+        	node.append("text")
+			.text(function(d) { return d.children ? null : ""; });
+        }
             
             
 		
@@ -216,23 +211,7 @@ function treemap(){
 //Function that creates the sunburst graphic
 function sunburst(){
 	isGraphic = "sunburst";
-	var element = document.getElementById("graphic");
-	if(element != null){
-		element.remove();
-	}
-
-	var tree = document.getElementById("treeStuff");
-	if(tree.style.display != 'block'){
-		tree.style.display = 'block';
-	}
-	var tree = document.getElementById("selectQuestionBar");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
-	var tree = document.getElementById("selectQuestionPizza");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
+	ControldivGraf();
 	var radio = document.getElementById('size');
 	radio.checked = true;
 	var width = 960,
@@ -241,8 +220,9 @@ function sunburst(){
 	color = d3.scale.category20c();
 
 	var svg = d3.select("body").append("svg")
-	.attr("width", width)
-	.attr("height", height)
+	/*.attr("width", width)
+	.attr("height", height)*/
+	.attr("class", "sunburst")
 	.attr("id", "graphic")
 	.append("g")
 	.attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
@@ -306,22 +286,7 @@ function sunburst(){
 
 function tifoldTree(){
 	isGraphic = "tifoldTree";
-	var element = document.getElementById("graphic");
-	if(element != null){
-		element.remove();
-	}
-	var tree = document.getElementById("treeStuff");
-	if(tree.style.display == 'none'){
-		tree.style.display = 'block';
-	}
-	var tree = document.getElementById("selectQuestionBar");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
-	var tree = document.getElementById("selectQuestionPizza");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
+	ControldivGraf();
 	var diameter = 960;
 
 	var tree = d3.layout.tree()
@@ -332,8 +297,8 @@ function tifoldTree(){
 	.projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
 
 	var svg = d3.select("body").append("svg")
-	.attr("width", diameter)
-	.attr("height", diameter - 150)
+	/*.attr("width", diameter)
+	.attr("height", diameter - 150)*/
 	.attr("id", "graphic")
 	.attr("class", "tifoldTree")
 	.append("g")
@@ -370,25 +335,12 @@ function tifoldTree(){
 	d3.select(self.frameElement).style("height", diameter - 150 + "px");
 }
 //Grafico em barras
-function barGraphic(question){
-	questionNum = question;
+
+function barGraphic(){
+	//questionNum = question;
+	var question = questionNum;
 	isGraphic = "barGraphic";
-	var element = document.getElementById("graphic");
-	if(element != null){
-		element.remove();
-	}
-	var tree = document.getElementById("treeStuff");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
-	var tree = document.getElementById("selectQuestionBar");
-	if(tree.style.display != 'block'){
-		tree.style.display = 'block';
-	}
-	var tree = document.getElementById("selectQuestionPizza");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
+	ControldivGraf();
 	var margin = {top: 120, right: 20, bottom: 30, left: 40},
 	width = 1460 - margin.left - margin.right,
 	height = 800 - margin.top - margin.bottom;
@@ -406,18 +358,17 @@ function barGraphic(question){
 	var yAxis = d3.svg.axis()
 	.scale(y)
 	.orient("left");
-				//.ticks(5, "");
 
 	var svg = d3.select("body").append("svg")
 	.attr("id", "graphic")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
+	/*.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)*/
+	.attr("class", "barGraphic")
 	.append("g")
 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	d3.json(json, function(error, data) {
 		if (error) throw error;
-	//console.log(data.children[1].children);
 	x.domain(data.children[question].children.map(function(d) { return d.name; }));
 	y.domain([0, d3.max(data.children[question].children, function(d) { return d.size; })]);
 
@@ -453,25 +404,10 @@ function barGraphic(question){
 }
 
 //Grafico pizza
-function pizzaGraphic(question){
-	questionNum = question;
+function pizzaGraphic(){
+	var question = questionNum;
 	isGraphic = "pizzaGraphic";
-	var element = document.getElementById("graphic");
-	if(element != null){
-		element.remove();
-	}
-	var tree = document.getElementById("treeStuff");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
-	var tree = document.getElementById("selectQuestionPizza");
-	if(tree.style.display != 'block'){
-		tree.style.display = 'block';
-	}
-	var tree = document.getElementById("selectQuestionBar");
-	if(tree.style.display != 'none'){
-		tree.style.display = 'none';
-	}
+	ControldivGraf();
 	var width = 960,
 	height = 800,
 	radius = Math.min(width, height) / 2;
@@ -493,8 +429,9 @@ function pizzaGraphic(question){
 	var svg = d3.select("body").append("svg")
 	.attr("id", "graphic")
 	.attr("class", "pizza")
-	.attr("width", width)
-	.attr("height", height)
+	/*.attr("width", width)
+	.attr("height", height)*/
+
 	.append("g")
 	.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -529,20 +466,14 @@ function pizzaGraphic(question){
 
 
 function mudaRotulos(r){
-    if (r==0) rotulo = 0;
-    if (r==1) rotulo = 1;
-    if (r==2) rotulo = 2;
-    if (r==3) rotulo = 3;
-    if (r==4) rotulo = 4;
-    if (r==5) rotulo = 5;
-    treemap() ;
+	rotulo=r;
+    atualGraphi() ;
 }
-
+function alterQuest(question){
+	questionNum = question;
+	mudaSemestre(null);
+}
 function mudaQuantidadeAtributos(c) {
-    if (c==0) qtdAtributos = 0;
-    if (c==1) qtdAtributos = 1;
-    mudaSemestre1();
-    mudaSemestre2();
-    mudaSemestre3();
-    treemap() ;
+    qtdAtributos=c;
+    mudaSemestre(null);
 }
