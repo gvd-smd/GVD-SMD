@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Tree Map Evasão 2015.1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="d3.min.js"></script>
+  <script type="text/javascript" src = "script.js"></script>
+  <meta name="author" content="Yuri Frota">
+</head>
+<body>
+    
+  <form id ="treeStuff">
+    <label><input type="radio" name="mode" value="size" id="size" checked> Size</label>
+    <label><input type="radio" name="mode" value="count" id="count" > Count</label>
+  </form>
+    
+  <select name="questions" id="selectQuestionBar" onchange="barGraphic(this.value)">
+    <option value="0">Situacao no SMD</option>
+    <option value="1">Genero</option>
+    <option value="2">Idade</option>
+    <option value="3">Semestre</option>
+    <option value="4">SMD como Primeira opcao de curso</option>
+    <option value="5">Conhecia o Projeto Pedagogico</option>
+    <option value="6">Expectativas Atendidas</option>
+    <option value="7">Grade Curricular</option>
+    <option value="8">Metodologia de Ensino</option>
+    <option value="9">Estrutura do curso</option>
+    <option value="10">Trabalha ou Trabalhou na Area</option>
+    <option value="11">Grade Curricular supre suas necessidades</option>
+    <option value="12">Inseguro com mercado de trabalho</option>
+    <option value="13">SMD deixa a desejar em</option>
+    <option value="14">Motivos para evasao</option>
+  </select>
+  <select name="questions" id="selectQuestionPizza" onchange="pizzaGraphic(this.value)">
+    <option value="0">Situacao no SMD</option>
+    <option value="1">Genero</option>
+    <option value="2">Idade</option>
+    <option value="3">Semestre</option>
+    <option value="4">SMD como Primeira opcao de curso</option>
+    <option value="5">Conhecia o Projeto Pedagogico</option>
+    <option value="6">Expectativas Atendidas</option>
+    <option value="7">Grade Curricular</option>
+    <option value="8">Metodologia de Ensino</option>
+    <option value="9">Estrutura do curso</option>
+    <option value="10">Trabalha ou Trabalhou na Area</option>
+    <option value="11">Grade Curricular supre suas necessidades</option>
+    <option value="12">Inseguro com mercado de trabalho</option>
+    <option value="13">SMD deixa a desejar em</option>
+    <option value="14">Motivos para evasao</option>
+  </select>
+  <form id="select">
+    <div id = "graph">
+      <p>Tipo de gráfico</p>
+      <br>
+      <label><input type="radio" name="mode" value="sunburst" onclick="sunburst()"> Sunburst</label>
+      <br>
+      <label><input type="radio" name="mode" value="treemap" onclick="treemap()"> TreeMap </label>
+      <br>
+      <label><input type="radio" name="mode" value="tifoldTree" onclick="tifoldTree()"> Tifold Tree </label>
+      <br>
+      <label><input type="radio" name="mode" value="barGraphic" onclick="barGraphic(0)"> Bar Graph </label>
+      <br>
+      <label><input type="radio" name="mode" value="pizzaGraphic" onclick="pizzaGraphic(0)"> Pizza Graph </label>
+      <br>
+    </div>
+  </form>
+  <form id="semestres">
+      <div id="semestre">
+        <p>Semestre</p>
+      <br>
+        <label><input type="radio" checked="" name="semestre" value="20151" onclick="mudaSemestre1()">2015.1</label>
+      <br>
+        <label><input type="radio" name="semestre" value="20152" onclick="mudaSemestre2()">2015.2</label>
+      <br>
+        <label><input type="radio" name="semestre" value="20161" onclick="mudaSemestre3()">2016.1</label>
+      <br>
+      </div>
+  </form>
+  <form id="completos">
+      <div id="completo">
+        <p>Atributos</p>
+      <br>
+        <label><input type="radio" checked="" name="completo" value="sete" onclick="mudaQuantidadeAtributos(0)">Simplificado</label>
+      <br>
+        <label><input type="radio" name="completo" value="com" onclick="mudaQuantidadeAtributos(1)">Completo</label>
+      <br>
+      </div>
+  </form>
+  <form id="rotulos">
+      <div id="rotulo">
+        <p>Rotulos</p>
+      <br>
+        <label><input type="radio" checked="" name="semestre" value="ctt" onclick="mudaRotulos(0)">Categoria-Tipo-Tamanho</label>
+      <br>
+        <label><input type="radio" name="semestre" value="tt" onclick="mudaRotulos(1)">Tipo-Tamanho</label>
+      <br>
+        <label><input type="radio" name="semestre" value="t" onclick="mudaRotulos(2)">Tamanho</label>
+      <br>
+        <label><input type="radio" name="semestre" value="tip" onclick="mudaRotulos(3)">Tipo</label>
+      <br>
+        <label><input type="radio" name="semestre" value="cat" onclick="mudaRotulos(4)">Categoria</label>
+      <br>
+        <label><input type="radio" name="semestre" value="cat" onclick="mudaRotulos(5)">Nenhum</label>
+      <br>
+      </div>
+  </form>
+  
+  
+</body>
