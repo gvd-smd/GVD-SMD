@@ -1,6 +1,6 @@
 var qtdAtributos = 0;
 var rotulo = 0;
-var json = "";
+var json = "json-sete/2015.1-sete.json";
 var isGraphic = ""
 var questionNum = 0;
 var semestre="20151";
@@ -98,7 +98,7 @@ function loadJSON(path, success, error){
     xhr.send();
 }
 
-function ControDivGraf(){
+function ControldivGraf(){
 	var element = document.getElementById("graphic");
 	if(element != null){
 		element.remove();
@@ -127,7 +127,7 @@ function ControDivGraf(){
 }
 function treemap(){
 	isGraphic = "treemap";
-	ControlDivGraf();
+	ControldivGraf();
 	var radio = document.getElementById('size');
 	radio.checked = true;
 	var margin = {top: 40, right: 10, bottom: 10, left: 10},
@@ -211,7 +211,7 @@ function treemap(){
 //Function that creates the sunburst graphic
 function sunburst(){
 	isGraphic = "sunburst";
-	ControlDivGraf();
+	ControldivGraf();
 	var radio = document.getElementById('size');
 	radio.checked = true;
 	var width = 960,
@@ -286,7 +286,7 @@ function sunburst(){
 
 function tifoldTree(){
 	isGraphic = "tifoldTree";
-	ControlDivGraf();
+	ControldivGraf();
 	var diameter = 960;
 
 	var tree = d3.layout.tree()
@@ -340,7 +340,7 @@ function barGraphic(){
 	//questionNum = question;
 	var question = questionNum;
 	isGraphic = "barGraphic";
-	ControlDivGraf();
+	ControldivGraf();
 	var margin = {top: 120, right: 20, bottom: 30, left: 40},
 	width = 1460 - margin.left - margin.right,
 	height = 800 - margin.top - margin.bottom;
@@ -407,7 +407,7 @@ function barGraphic(){
 function pizzaGraphic(){
 	var question = questionNum;
 	isGraphic = "pizzaGraphic";
-	ControlDivGraf();
+	ControldivGraf();
 	var width = 960,
 	height = 800,
 	radius = Math.min(width, height) / 2;
