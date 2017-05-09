@@ -1,32 +1,88 @@
 var qtdAtributos = 0;
 var rotulo = 0;
-var json = "json-sete/2015.1-sete.json";
+var json = "";
 var isGraphic = ""
 var questionNum = 0;
 var semestre="20151";
 var jsonQuest ="";
+var jsonData ="";
 var jsonlido = false;
 var selectApagado = false;
+var opts = [];
+var v;
+var trues = 1;
+var B;
+var T;
+var jantes;
+function selectTreeOpt(i){
+	console.log("ivalywee"+opts.length);
+	i = parseInt(i);
+	console.log("ivalye"+i);
+	var list1 = document.getElementById("selectTreeOpt");
+	opts[i] = list1.children[i].childNodes[2].checked;
+	jsonData = eval(uneval(jsonQuest));
+	jantes = jsonData;
+	for(var j=opts.length-1;j>=0;j--){
+		console.log("Estado"+opts[j]+j)
+		if(!opts[j]){
+			console.log("selectApagado"+j);
+			console.log(jsonData.children[j]);
+			jsonData.children.splice(j,1);
+		}
+	}
+	atualGraphi();
+	/*console.log("Checked:"+opts[i]+",posi:"+i);
+	console.log(document.getElementById("graphic"));
+	console.log(i+1);
+	console.log(document.getElementById("graphic").children[(i+1)]);
+	var Box = document.getElementById("graphic").children[(i+1)];
+	B = Box;
+	console.log(B);
+	if(opts[i]){
+		Box.style.display = "none";
+	}else{
+		Box.style.display = "block";	
+	}*/
 
-function addOptions(){
+}
+function addOptions(isTree){
 	console.log(jsonlido+""+selectApagado)
 	if(jsonlido && selectApagado){
 		jsonlido = false;
 		selectApagado = false;
-		var list = document.getElementById("selectQuestion");
+		jsonData=jsonQuest;
+		var list1 = document.getElementById("selectTreeOpt");
+		var	list2 = document.getElementById("selectQuestion");
 	    for(var i =0;i< jsonQuest.children.length;i++){
-			var opt = document.createElement('option');
+			var label = document.createElement("label");
+		    var radio = document.createElement("input");
+		    radio.type = "checkbox";
+		    radio.name = jsonQuest.children[i].name;
+		    radio.value = i;
+		    radio.checked=true;
+			opts[i] = true;
+		    radio.onclick  = function(){selectTreeOpt(this.value)};
+		    label.appendChild(document.createElement("br"));
+		    label.appendChild(document.createTextNode(jsonQuest.children[i].name));
+		    label.appendChild(radio);
+
+    		var opt = document.createElement('option');
 		    opt.value = i;
 		    opt.innerHTML = jsonQuest.children[i].name;
-		    list.appendChild(opt);
+		    list1.appendChild(label);
+		    list2.appendChild(opt);
 		}
 		if(questionNum < jsonQuest.children.length){
-			list.value = questionNum;
+			list2.value = questionNum;
 		}
 		atualGraphi();
 	}
 }
-function atualGraphi(){
+function atualGraphi(val){
+	if(val!=null){
+		isGraphic=val;
+		mudaSemestre()
+	}
 	switch(isGraphic){
 		case "treemap":
 			treemap();
@@ -53,7 +109,7 @@ function mudaSemestre(myRadio){
 		console.log("Radio Button"+ semestre)
 	}
 	var oldjson = json;
-	if(semestre=="20151"){
+	if(semestre=="20151" || json==""){
         if (qtdAtributos==0) json = "json-sete/2015.1-sete.json";
         else if (qtdAtributos==1) json = "json-completo/2015.1-completo.json";
     }else if(semestre=="20152"){
@@ -66,16 +122,18 @@ function mudaSemestre(myRadio){
     if(oldjson != json){
     	var s = "";
     	loadJSON(json,
-         function(data) { jsonQuest = data ;jsonlido=true;addOptions();},
+        function(data) { jsonQuest = data ;jsonlido=true;addOptions(0);},
         function(xhr) { console.error(xhr); });
-        var list = document.getElementById("selectQuestion");
+        var list1 = document.getElementById("selectQuestion");
+        var list2 = document.getElementById("selectTreeOpt");
         var indexchecked=0;
-		while (list.hasChildNodes()) {  
-
-		    list.removeChild(list.firstChild);
+		while (list1.hasChildNodes()) {  
+		    list1.removeChild(list1.firstChild);
+		    if(list2.hasChildNodes())
+		    	list2.removeChild(list2.firstChild);
 		}
 		selectApagado=true;
-		addOptions();
+		addOptions(0);
     }else{
     	atualGraphi()
     }
@@ -104,24 +162,32 @@ function ControldivGraf(){
 		element.remove();
 	}
 	var notree=false;
-
-	var tree = document.getElementById("selectQuestion");
+	
+	var select = document.getElementById("selectQuestion");
 	if(isGraphic == "barGraphic" || isGraphic == "pizzaGraphic"){
 		notree=true;
-		if(tree.style.display != 'block'){
-			tree.style.display = 'block';
+		if(select.style.display != 'block'){
+			select.style.display = 'block';
 		}
-		tree = document.getElementById("treeStuff");
-		if(tree.style.display != 'none'){
-			tree.style.display = 'none';
+		select = document.getElementById("treeStuff");
+		if(select.style.display != 'none'){
+			select.style.display = 'none';
+		}
+		select = document.getElementById("selectTreeOpt");
+		if(select.style.display != 'none'){
+			select.style.display = 'none';
 		}
 	}else{
-		if(tree.style.display != 'none'){
-			tree.style.display = 'none';
+		if(select.style.display != 'none'){
+			select.style.display = 'none';
 		}
-		tree = document.getElementById("treeStuff");
-		if(tree.style.display != 'block'){
-			tree.style.display = 'block';
+		select = document.getElementById("treeStuff");
+		if(select.style.display != 'block'){
+			select.style.display = 'block';
+		}
+		select = document.getElementById("selectTreeOpt");
+		if(select.style.display != 'block'){
+			select.style.display = 'block';
 		}
 	}
 }
@@ -133,7 +199,13 @@ function treemap(){
 	var margin = {top: 40, right: 10, bottom: 10, left: 10},
 	width = 1500 - margin.left - margin.right,
 	height = 810 - margin.top - margin.bottom;
-
+	trues=0;
+	for(var i = 0;i<opts.length;i++){
+		if(opts[i])
+			trues++;
+	}
+	width = (window.innerWidth*0.8);
+	height = (window.innerHeight*0.8);
 	var color = d3.scale.category20c();
 
 	var treemap = d3.layout.treemap()
@@ -150,17 +222,58 @@ function treemap(){
 	.style("left", margin.left + "px")
 	.style("top", margin.top + "px");*/
 	console.log("Até Agora ok");
+	var i = 0;
+
 	d3.json(json, function(error, root) {
 		if (error) throw error;
+		var i=0;
+		console.log(root);
+		root=jsonData;
 		var node = div.datum(root).selectAll(".node")
 		.data(treemap.nodes)
 		.enter().append("div")
 		.attr("class", "node")
+		/*.filter(function(d){
+			//console.log(d.parent);
+			if(d.parent!=null){
+				if(d.parent.name == "Analise da Evasao - SMD - 2015.1"){
+					/*console.log(i+":"+opts[i]);
+					if(opts[i++]){
+						d.paiHidden = true;
+						return true;
+					}else{
+						d.paiHidden = false;
+						return false;
+					}
+				}else{
+					if(d.parent.paiHidden)
+						return true;
+					else
+						return false;
+				}
+			}else{
+				return true;
+			}
+		})*/
+		.attr("class", function(d) {/*console.log(d);*/ T=d; return d.children ? "node pai" : "node filho"; })
 		.call(position)
 		.style("background", function(d) { return d.children ? color(d.name) : null; })
-		.text(function(d) { return d.children ? null : ""; });
+		.text(function(d) { return d.children ? null : ""; })
+		/*.on("click", function(){
+			console.log(this.style);
+			this.style.display = "none";
+		});*/
 
+		//if()console.log(d.name+"has:"+d.children);
+		
+		var B = false;
+		v=node;
+		var i =0;
+		var pai;
+		console.log(node);
+		
 		console.log("Entrou");
+
         if (rotulo==0) { 
         	node.append("text")
 			.text(function(d) { return d.children ? null : d.parent.name+'-'+d.name+'-'+d.size; });
@@ -186,6 +299,23 @@ function treemap(){
 		node.append("title")
 		.text(function(d) { if(d.children){return d.name}});
 
+		/*for(var j=1;j<node[0].length;j++){
+			//console.log("j:"+j);
+			//console.log(node[0][j].class);
+			if(node[0][j].className=="node pai"){
+				pai = j;
+				node[0][j].pai=true;
+			}else{
+				node[0][pai].appendChild(node[0][j]);
+				node[0][j].pai=false;
+				node[0][j].paiX=parseInt(v[0][pai].style.left,10);
+				node[0][j].paiY=parseInt(v[0][pai].style.top,10);
+				node[0][j].paiWid=parseInt(v[0][pai].style.width,10);
+				node[0][j].paiHei=parseInt(v[0][pai].style.height,10);
+			}
+			//console.log(pai);
+
+		}*/
 		d3.selectAll("input").on("change", function change() {
 			var value = this.value === "count"
 			? function() { return 1; }
@@ -197,14 +327,32 @@ function treemap(){
 			.duration(1500)
 			.call(position);
 		});
-	});
 
+		
+	});
 	function position() {
 		this.style("left", function(d) { return d.x -200 + "px"; }) // deslocamento para a esquerda
 		.style("top", function(d) { return d.y + "px"; })
 		.style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
 		.style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; });
 	}
+	/*function position() {
+		//console.log(this.pai);
+		//if(this.pai){
+			console.log("Pai");
+			this.style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
+			.style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; })
+			.style("left", function(d) {return d.x + "px"; }) // deslocamento para a esquerda
+			.style("top", function(d) {return d.y + "px"; });
+			}else{
+				("left", function(d) {return ((d.children)? d.x: (d.paiX-d.x)) + "px"; }) // deslocamento para a esquerda
+			.style("top", function(d) {return ((d.children)? d.y:(d.paiY-d.y)) + "px"; })
+			
+			console.log("Filho");
+			this.style("left", function(d) {console.log("Filho dx:"+d.x+"ddx:"+d.dx+"dy"+d.y+"ddy"+d.dy); return (this.paiX-d.x) + "px"; }) // deslocamento para a esquerda
+			.style("top", function(d) {/*console.log("node[0][this.nodePai]"); return (this.paiY-d.y)  + "px"; })
+		}
+	}*/
 };
 
 

@@ -19,8 +19,9 @@ body {
 }
 #graphic{
   float: left;
-  width:80%;height:auto; min-height:200%;
+  width:80%;
   height:auto;
+  min-height:200%;
 }
 .treeMap{
   position: relative;
@@ -37,9 +38,14 @@ body {
   line-height: 20px;
   overflow: hidden;
   position: absolute;
+  
   text-indent: 2px;
   text-align: center;
   }
+#graphic div:first-child{
+  position: absolute;
+  display: none;
+}
 .label{
  height: 30px;
 }

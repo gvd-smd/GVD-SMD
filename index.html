@@ -13,15 +13,15 @@
       <div id = "graph">
         <p>Tipo de gráfico</p>
         <br>
-        <label><input type="radio" name="mode" value="sunburst" onclick="sunburst()"> Sunburst</label>
+        <label><input type="radio" name="mode" value="sunburst" onclick="atualGraphi('sunburst')"> Sunburst</label>
         <br>
-        <label><input type="radio" name="mode" value="treemap" onclick="treemap()"> TreeMap </label>
+        <label><input type="radio" name="mode" value="treemap" onclick="atualGraphi('treemap')"> TreeMap </label>
         <br>
-        <label><input type="radio" name="mode" value="tifoldTree" onclick="tifoldTree()"> Tifold Tree </label>
+        <label><input type="radio" name="mode" value="tifoldTree" onclick="atualGraphi('tifoldTree')"> Tifold Tree </label>
         <br>
-        <label><input type="radio" name="mode" value="barGraphic" onclick="barGraphic(0)"> Bar Graph </label>
+        <label><input type="radio" name="mode" value="barGraphic" onclick="atualGraphi('barGraphic')"> Bar Graph </label>
         <br>
-        <label><input type="radio" name="mode" value="pizzaGraphic" onclick="pizzaGraphic(0)"> Pizza Graph </label>
+        <label><input type="radio" name="mode" value="pizzaGraphic" onclick="atualGraphi('pizzaGraphic')"> Pizza Graph </label>
         <br>
       </div>
     </form>
@@ -69,6 +69,10 @@
     <form id ="treeStuff">
       <label><input type="radio" name="mode" value="size" id="size" checked> Size</label>
       <label><input type="radio" name="mode" value="count" id="count" > Count</label>
+    </form>
+    
+    <form id="selectTreeOpt">
+    Aqui
     </form>
       
     <select name="questions" id="selectQuestion" onchange="alterQuest(this.value)">
