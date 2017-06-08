@@ -9,90 +9,42 @@
 </head>
 <body>
   <div id="formulario">
-    <form id="select">
-      <div id = "graph">
-        <p>Tipo de gráfico</p>
-        <br>
-        <label><input type="radio" name="mode" value="sunburst" onclick="atualGraphi('sunburst')"> Sunburst</label>
-        <br>
-        <label><input type="radio" name="mode" value="treemap" onclick="atualGraphi('treemap')"> TreeMap </label>
-        <br>
-        <label><input type="radio" name="mode" value="tifoldTree" onclick="atualGraphi('tifoldTree')"> Tifold Tree </label>
-        <br>
-        <label><input type="radio" name="mode" value="barGraphic" onclick="atualGraphi('barGraphic')"> Bar Graph </label>
-        <br>
-        <label><input type="radio" name="mode" value="pizzaGraphic" onclick="atualGraphi('pizzaGraphic')"> Pizza Graph </label>
-        <br>
+  <select name="tipoGrafico" onclick="atualGraphi('fromSelect')">
+    <option value="selecione">Tipo de gráfico</option>
+    <option value="sunburst">Sunburst</option>
+    <option value="treemap">TreeMap</option>
+    <option value="tifoldTree">Tifold Tree</option>
+    <option value="barGraphic">Bar Graph</option>
+    <option value="pizzaGraphic">Pizza Graph</option>
+  </select>
+  <select name="Semestre" onclick="mudaSemestre('fromSelect')">
+    <option value="">Semestre</option>
+    <option value="0">2015.1</option>
+    <option value="1">2015.2</option>
+    <option value="2">2016.1</option>
+  </select>
+  <select name="Rotulos" onclick="mudaRotulos(this)">
+    <option value="">Rotulos</option>
+    <option value="0">Categoria-Tipo-Tamanho</option>
+    <option value="1">Tipo-Tamanho</option>
+    <option value="2">Tamanho</option>
+    <option value="3">Tipo</option>
+    <option value="4">Categoria</option>
+    <option value="5">Nenhum</option>
+  </select>
+  <form>  
+    <div class="multiselect">
+      <div class="selectBox" onclick="showCheckboxes()">
+        <select>
+          <option>Select an option</option>
+        </select>
+        <div class="overSelect"></div>
       </div>
-    </form>
-    <form id="semestres">
-        <div id="semestre">
-          <p>Semestre</p>
-        <br>
-          <label><input type="radio" checked="" name="semestre" value="20151" onclick="mudaSemestre(this)">2015.1</label>
-        <br>
-          <label><input type="radio" name="semestre" value="20152" onclick="mudaSemestre(this)">2015.2</label>
-        <br>
-          <label><input type="radio" name="semestre" value="20161" onclick="mudaSemestre(this)">2016.1</label>
-        <br>
-        </div>
-    </form>
-    <form id="completos">
-        <div id="completo">
-          <p>Atributos</p>
-        <br>
-          <label><input type="radio" checked="" name="completo" value="sete" onclick="mudaQuantidadeAtributos(0)">Simplificado</label>
-        <br>
-          <label><input type="radio" name="completo" value="com" onclick="mudaQuantidadeAtributos(1)">Completo</label>
-        <br>
-        </div>
-    </form>
-    <form id="rotulos">
-        <div id="rotulo">
-          <p>Rotulos</p>
-        <br>
-          <label><input type="radio" checked="" name="semestre" value="ctt" onclick="mudaRotulos(0)">Categoria-Tipo-Tamanho</label>
-        <br>
-          <label><input type="radio" name="semestre" value="tt" onclick="mudaRotulos(1)">Tipo-Tamanho</label>
-        <br>
-          <label><input type="radio" name="semestre" value="t" onclick="mudaRotulos(2)">Tamanho</label>
-        <br>
-          <label><input type="radio" name="semestre" value="tip" onclick="mudaRotulos(3)">Tipo</label>
-        <br>
-          <label><input type="radio" name="semestre" value="cat" onclick="mudaRotulos(4)">Categoria</label>
-        <br>
-          <label><input type="radio" name="semestre" value="cat" onclick="mudaRotulos(5)">Nenhum</label>
-        <br>
-        </div>
-    </form>
-    
-    <form id ="treeStuff">
-      <label><input type="radio" name="mode" value="size" id="size" checked> Size</label>
-      <label><input type="radio" name="mode" value="count" id="count" > Count</label>
-    </form>
-    
-    <form id="selectTreeOpt">
-    Aqui
-    </form>
-      
-    <select name="questions" id="selectQuestion" onchange="alterQuest(this.value)">
-      <option value="0">Situacao no SMD</option>
-      <option value="1">Genero</option>
-      <option value="2">Idade</option>
-      <option value="3">Semestre</option>
-      <option value="4">SMD como Primeira opcao de curso</option>
-      <option value="5">Conhecia o Projeto Pedagogico</option>
-      <option value="6">Expectativas Atendidas</option>
-      <option value="7">Grade Curricular</option>
-      <option value="8">Metodologia de Ensino</option>
-      <option value="9">Estrutura do curso</option>
-      <option value="10">Trabalha ou Trabalhou na Area</option>
-      <option value="11">Grade Curricular supre suas necessidades</option>
-      <option value="12">Inseguro com mercado de trabalho</option>
-      <option value="13">SMD deixa a desejar em</option>
-      <option value="14">Motivos para evasao</option>
-    </select>
-  </div>
-  
-  
+      <div id="selectTreeOpt"></div>
+    </div> 
+  </form>
+  <select name="questions" id="selectQuestion" onchange="alterQuest(this.value)"></select>
+  <script type="text/javascript">
+    document.getElementsByTagName("BODY")[0].addEventListener("click",Click);
+  </script>
 </body>

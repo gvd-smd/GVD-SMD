@@ -21,16 +21,8 @@ body {
   float: left;
   width:80%;
   height:auto;
-  min-height:200%;
-}
-.treeMap{
-  position: relative;
-  left:10%;
-}
-
-.pizza{
-  position: absolute;
-  top: 120px;
+  min-height:100%;
+  background-color: #ccc;
 }
 .node {
   border: solid 1px white;
@@ -42,7 +34,7 @@ body {
   text-indent: 2px;
   text-align: center;
   }
-#graphic div:first-child{
+#graphic div #g:first-child{
   position: absolute;
   display: none;
 }
@@ -73,7 +65,6 @@ p{
 .tifoldTree{
   margin-top: 25px;
 }
-
 #treeStuff{
   display:none;
 }
@@ -88,27 +79,51 @@ p{
   stroke: steelblue;
   stroke-width: 1.5px;
 }
-
-/* Bar graphic Stuff*/
 .bar {
   fill: steelblue;
 }
-
 .bar:hover {
   fill: brown;
 }
-
 .axis {
   font: 15px sans-serif;
 }
-
 .axis path,
 .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
-
 .x.axis path {
+  display: none;
+}
+.multiselect {
+  width: 200px;
+}
+.selectBox {
+  position: relative;
+}
+.selectBox select {
+  width: 100%;
+  font-weight: bold;
+}
+.overSelect {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+#selectTreeOpt {
+  display: none;
+  border: 1px #dadada solid;
+}
+#selectTreeOpt label {
+  display: block;
+}
+#selectTreeOpt label:hover {
+  background-color: #123;
+}
+#selectTreeOpt input[type=checkbox]{
   display: none;
 }
