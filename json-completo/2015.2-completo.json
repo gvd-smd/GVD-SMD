@@ -1,0 +1,137 @@
+{"name":"Analise da Evasao - SMD - 2015.2",
+	"children":[
+		{"name":"Situacao no SMD",
+			"children":[
+				{"name":"Regularmente matriculado", "size":147},
+				{"name":"Matricula trancada", "size":5},
+				{"name":"Graduado no SMD", "size":4},
+				{"name":"Desistente", "size":3},
+				{"name":"Evadido", "size":3}
+			]
+		},
+		{"name":"Genero",
+			"children":[
+				{"name":"Prefiro nao informar", "size":8},
+				{"name":"Masculino", "size":108},
+				{"name":"Feminino", "size":47}
+			]
+		},
+		{"name":"Idade",
+			"children":[
+				{"name":"16-20", "size":61},
+				{"name":"21-25", "size":75},
+				{"name":"26-30", "size":19},
+				{"name":"Mais de 30", "size":8}
+			]
+		},
+		{"name":"Semestre",
+			"children":[
+				{"name":"2010.1", "size":7},
+				{"name":"2011.1", "size":14},
+				{"name":"2012.1", "size":22},
+				{"name":"2013.1", "size":21},
+				{"name":"2013.2", "size":10},
+				{"name":"2014.1", "size":18},
+				{"name":"2014.2", "size":18},
+				{"name":"2015.1", "size":25},
+				{"name":"2015.2", "size":28}
+			]
+		},
+		{"name":"SMD como Primeira opcao de curso",
+			"children":[
+				{"name":"Sim", "size":132},
+				{"name":"Nao", "size":31}
+			]
+		},
+		{"name":"Conhecia o Projeto Pedagogico",
+			"children":[
+				{"name":"Sim", "size":125},
+				{"name":"Nao", "size":38}
+			]
+		},
+		{"name":"Expectativas Atendidas",
+			"children":[
+				{"name":"Sim", "size":98},
+				{"name":"Nao", "size":65}
+			]
+		},
+
+		
+		{"name":"Grade Curricular",
+			"children":[
+				{"name":"Muito Satisfatoria", "size":8},
+				{"name":"Satisfatoria", "size":95},
+				{"name":"Pouco Satisfatoria", "size":49},
+				{"name":"Insatisfatoria", "size":11},
+				{"name":"Nao Sei", "size":0}
+			]
+		},
+		{"name":"Metodologia de Ensino",
+			"children":[
+				{"name":"Muito Satisfatoria", "size":14},
+				{"name":"Satisfatoria", "size":84},
+				{"name":"Pouco Satisfatoria", "size":42},
+				{"name":"Insatisfatoria", "size":21},
+				{"name":"Nao Sei", "size":2}
+			]
+		},
+
+		
+		{"name":"Estrutura do curso",
+			"children":[
+				{"name":"Oferece estrutura necessaria", "size":19},
+				{"name":"Basica necessitando melhorias", "size":112},
+				{"name":"Longe de oferecer estrutura necessaria", "size":32},
+				{"name":"Nao Sei", "size":0}
+			]
+		},
+		{"name":"Trabalha ou Trabalhou na Area",
+			"children":[
+				{"name":"Sim", "size":73},
+				{"name":"Nao", "size":90}
+			]
+		},
+
+		{"name":"Grade Curricular supre suas necessidades",
+			"children":[
+				{"name":"Completamente", "size":18},
+				{"name":"Razoavelmente", "size":84},
+				{"name":"Parcialmente", "size":44},
+				{"name":"Nao", "size":17}
+			]
+		},
+		{"name":"Inseguro com mercado de trabalho",
+			"children":[
+				{"name":"Sim", "size":74},
+				{"name":"Nao", "size":60},
+				{"name":"Parcialmente", "size":29}
+			]
+		},
+		{"name":"SMD deixa a desejar em",
+			"children":[
+				{"name":"Projeto Pedagogico", "size":21},
+				{"name":"Estrutura do curso", "size":48},
+				{"name":"Corpo docente", "size":31},
+				{"name":"Falta de reconhecimento ou valorizacao do mercado", "size":33},
+				{"name":"Desorganizacao em geral", "size":25},
+				{"name":"Outro", "size":5}
+			]
+		},
+		{"name":"Motivos para evasao",
+			"children":[
+				{"name":"Oportunidades", "size":10},
+				{"name":"Reconhecimento profissional", "size":11},
+				{"name":"Qualidade das aulas", "size":36},
+				{"name":"Organizacao Pedagogica", "size":16},
+				{"name":"Problemas de Horario", "size":15},
+				{"name":"Problemas Pessoais", "size":24},
+				{"name":"Identificacao com o curso", "size":28},
+				{"name":"Entrada em novo curso", "size":3},
+				{"name":"Descontentamento com Estrutura", "size":13},
+				{"name":"Outro", "size":7}
+			]
+		}
+		
+	]
+
+}
