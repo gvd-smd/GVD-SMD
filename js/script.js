@@ -1,8 +1,10 @@
 var rotulo = 0;
-var isGraphic = ""
+var isGraphic = "sunburst"
 var questionNum = 0;
-var semestre;
-var jsonData ="";
+var oldsemestre = [];
+var jsonlido = false;
+var semestre=[];
+var jsonData =[];
 var selectApagado = false;
 var opts = [];
 var v;
@@ -11,11 +13,17 @@ var json="json-completo/empty.json";
 var winWidth=0,winHeight=0;
 var testeTree;
 var colorIndex;
-var colors = ['#2d335b', '#535b2d', '#494949', '#d7d7d7', '9ad4ce','#9c6ce4' ,'#63c0df' ,'#ffffff' ,'#fff06c ','#ffb76c','#ebd7dc','#dbd7dc','#cbd7dc','#bbd7dc','#abd7dc'];
+//var colors = ['#2d335b', '#535b2d', '#494949', '#d7d7d7', '9ad4ce','#9c6ce4' ,'#63c0df' ,'#ffffff' ,'#fff06c ','#ffb76c','#ebd7dc','#dbd7dc','#cbd7dc','#bbd7dc','#abd7dc',];
+var colors = ['#F5F5F5','#F5F5DC','#FDF5E6','#abc2dc','#FFF8DC','#FAEBD7','#FFE4C4','#E6E6FA','#FFE4E1','#E0FFFF','#FFE4B5','#FFEFD5','#F0F8FF','#FFFACD','#abd7dc','bbd7dc']
 var colorsName = [];
+var fontsize = 10;
 var jsonArray=[{nome:"20151",origem:"json-completo/2015.1-completo.json",json:null},
 {nome:"20152",origem:"json-completo/2015.2-completo.json",json:null},
 {nome:"20161",origem:"json-completo/2016.1-completo.json",json:null}];
+
+var selectQuestArray = []; 
+var selectTreeArray = [];
+var semestresCheck = [];
 
 function colored(name){
 	var i =0;
@@ -25,7 +33,7 @@ function colored(name){
 		if(!NameFinded && colorsName[i]==name){
 			NameFinded=true;
 			break;
-		}else if(colorsName[i]==null && colorVaga==-1){
+		}else if(colorVaga==-1 && colorsName[i]==null){
 			colorVaga=i;
 		}
 	}
@@ -41,43 +49,83 @@ function colored(name){
 
 
 
-function addOptions(){
+function addOptions(fromIndex){
 	if(jsonlido && selectApagado){
-        jsonData = eval(uneval(jsonArray[semestre].json))
+        jsonData[semestre[fromIndex]] = eval(uneval(jsonArray[semestre[fromIndex]].json))
 		jsonlido = false;
 		selectApagado = frameElement;
-		var selectTreeOpt_list = document.getElementById("selectTreeOpt");
-		var	selectQuestion_list = document.getElementById("selectQuestion");
-	    for(var i =0;i< jsonArray[semestre].json.children.length;i++){
-			console.log("Passou selectTreeOpt");
-			var label = document.createElement("label"),radio = document.createElement("input");
-		    radio.type = "checkbox";
-		    radio.value = i;
-		    radio.checked=(opts[i]==false)?false:true;///deve ser feito dessa forma pois opts[i] pode estar em estado inicial(undefined) ou null.
-		    radio.addEventListener('click',function(){alterQuestTree(this.value)});
-		    if(!radio.checked) jsonData.children[i]={};
-		    label.setAttribute("style","background-color:"+((radio.checked)?"#30a294":"#fff"));
-			label.appendChild(radio);
-		    label.appendChild(document.createTextNode(jsonArray[semestre].json.children[i].name));
-			selectTreeOpt_list.appendChild(label);
+		var	dados = document.getElementById("dados");
+		dados = dados.children[1];
 
-			var opt = document.createElement('option');
-		    opt.value = i;
-		    opt.innerHTML = jsonArray[semestre].json.children[i].name;
-			selectQuestion_list.appendChild(opt);
+		
+        var ul = document.createElement("ul");
+
+	    for(var i =0;i< jsonArray[semestre[fromIndex]].json.children.length;i++){
+			
+
+            var liChild = document.createElement("li");
+            var aChild = document.createElement("a");
+            aChild.href="#";
+            aChild.setAttribute( "onclick", "javascript: alterQuest("+i+");" );
+            aChild.innerHTML=jsonArray[semestre[fromIndex]].json.children[i].name;
+            if(opts[i]==null)
+            	opts[i]=true;
+        		
+
+            liChild.append(aChild);
+            if(isGraphic == "treemap" || isGraphic == "sunburst" || isGraphic == "tifoldTree" ){
+            	if(opts[i])
+            		liChild.classList.add("active")
+            	else
+            		jsonData[semestre[fromIndex]].children[i]={}
+            }else{
+            	if(i==questionNum)
+            		liChild.classList.add("active")
+            }
+
+            dados.append(liChild);
 		}
-		if(questionNum < jsonArray[semestre].json.children.length){
-			selectQuestion_list.value = questionNum;
+		var liChild = document.createElement("li");
+        var aChild = document.createElement("a");
+        aChild.href="#";
+        aChild.setAttribute( "onclick", "javascript: uncheckDados();" );
+        aChild.innerHTML="Deselecionar Todos";
+        liChild.append(aChild);
+        liChild.classList.add("treeLi")
+        dados.append(liChild);
+
+
+        liChild = document.createElement("li");
+        aChild = document.createElement("a");
+        aChild.href="#";
+        aChild.setAttribute( "onclick", "javascript: checkDados();" );
+        aChild.innerHTML="Selecionar Todos";
+        liChild.append(aChild);
+        liChild.classList.add("treeLi")
+		dados.append(liChild);
+
+		var cssAlter = document.getElementById("JsAlterTree");
+		if(isGraphic == "treemap" || isGraphic == "sunburst" || isGraphic == "tifoldTree" ){
+			cssAlter.innerHTML=".treeLi {display:block} #graphics{height:80%}"
+		}else{
+			cssAlter.innerHTML=".treeLi {display:none} #graphics{height:100%}"
 		}
 		atualGraphi();
 	}
 }
-function atualGraphi(val){
-	if(val!=null && val == "fromSelect"){
-		isGraphic = document.getElementById("formulario").getElementsByTagName("select")[0].value;
+function atualGraphi(fromSelect){
+	if(fromSelect!=null){
+		isGraphic = fromSelect;
+		var links = document.getElementById("menuUp").getElementsByTagName("a");
+		for(var i = 0;i<links.length;i++){
+			links[i].classList.remove("active")
+			if(links[i].id == isGraphic)
+				links[i].classList.add("active")
+		}
 		console.log("o q chegou"+isGraphic);
 		mudaSemestre();
 	}
+	eraseGraphics();
 	switch(isGraphic){
 		case "treemap":
 			treemap();
@@ -98,36 +146,79 @@ function atualGraphi(val){
 			console.log("Não foi possivel atualizar gráfico isGraphic invalido");
 			break;
 	}	
-}
-function mudaSemestre(value){
-	if(value != null && value == "fromSelect"){
-		value = document.getElementById("formulario").getElementsByTagName("select")[1].value;
-		console.log("Select Button"+ semestre);
+	var leg = document.getElementById("legenda");
+	if(isGraphic == "barGraphic" || isGraphic == "pizzaGraphic"){
+		leg.style.display = "none"
+	}else{
+		leg.style.display = "block"
+		putLegenda();
 	}
-    if(value!=null){
-    	oldsemestre=semestre;
-    	semestre=value;
-    }else if(semestre==null){
-    	oldsemestre = semestre;
-    	semestre=0;
-    } 
+	
+}
+function alterSemestre(value){
+	console.log("Open alterSemestre")
+	var rotulos = document.getElementById("semestres").getElementsByTagName("li");
+	console.log(value)
+	var checkeds=0;
+	
+	console.log(checkeds);
+	if(semestresCheck[value]!=true){
+		for(var i =0 ;i<semestresCheck.length;i++)
+			checkeds+=(semestresCheck[i])?1:0;
+		if(checkeds<2){
+			semestresCheck[value]=true;
+		}
+	}else{
+		semestresCheck[value]=false;
+	}
+	var indexJson = 0;
+	for(var i = 0;i<rotulos.length;i++){
+		if(semestresCheck[i]){
+			if(!rotulos[i].classList.contains("active")){
+				rotulos[i].classList.add("active")
+			}
+		}else{
+			rotulos[i].classList.remove("active")
+		}
+		if(rotulos[i].classList.contains("active")){
+			semestre[indexJson++]=i;
+		}
+	}
+	if(indexJson<1 || indexJson>2){
+		semestre[0]=null;
+		semestre[1]=null;
+		eraseGraphics();
+		limpaLegenda();
+	}else if(indexJson==1){
+		semestre[1]=null;
+		mudaSemestre(0);
+	}else{
+		if(jsonData[0] == null)
+			mudaSemestre(value,0);
+		else
+			mudaSemestre(value,1);
+	}
 
-    if(oldsemestre!=semestre){
-    	if(jsonArray[semestre].json==null)
-    		loadJSON(jsonArray[semestre].origem, function(data) { jsonArray[semestre].json=data ;jsonlido=true;addOptions();}, function(xhr) { console.error(xhr); });
+	
+}
+function mudaSemestre(value,Index){
+	var fromIndex = 0;
+	if(Index!=null)
+		fromIndex = Index;
+	console.log("Comp value!=null"+value)
+    console.log("Semestres Dif:"+oldsemestre[fromIndex]+" - "+value)
+    if(oldsemestre[fromIndex]!=semestre[fromIndex] || Index!=null){
+    	console.log("entrou pois é diferentes"+fromIndex)
+    	if(jsonArray[semestre[fromIndex]].json==null)
+    		loadJSON(jsonArray[semestre[fromIndex]].origem, function(data) { jsonArray[semestre[fromIndex]].json=data ;jsonlido=true;addOptions(fromIndex);}, function(xhr) { console.error(xhr); });
         else{
         	jsonlido=true;
         }
-        var selectQuestion_list = document.getElementById("selectQuestion");
-        var selectTreeOpt_list = document.getElementById("selectTreeOpt");
-		while (selectQuestion_list.hasChildNodes() || selectTreeOpt_list.hasChildNodes()) {  
-			if(selectQuestion_list.hasChildNodes())
-		    	selectQuestion_list.removeChild(selectQuestion_list.firstChild);
-		    if(selectTreeOpt_list.hasChildNodes())
-		    	selectTreeOpt_list.removeChild(selectTreeOpt_list.firstChild);
-		}
+        //var selectQuestion_list = document.getElementById("dados");
+        var	dados = document.getElementById("dados").children[1];
+		while (dados.hasChildNodes() ) {  dados.removeChild(dados.firstChild);}
 		selectApagado=true;
-		addOptions();
+		addOptions(fromIndex);
     }else{
     	atualGraphi();
     }
@@ -149,273 +240,215 @@ function loadJSON(path, success, error){
     xhr.send();
 }
 
-function ControldivGraf(){
-	var element = document.getElementById("graphic");
-	if(element != null){
-		element.remove();
+function mudaRotulos(r){
+	rotulo=r;
+
+	var rotulos = document.getElementById("rotulos").getElementsByTagName("li");
+	for(var i = 0;i<rotulos.length;i++){
+		rotulos[i].classList.remove("active")
+		if(rotulos[i].getElementsByTagName("a")[0].id == r)
+			rotulos[i].classList.add("active")
 	}
-	var select = document.getElementById("selectQuestion");
-	if(isGraphic == "barGraphic" || isGraphic == "pizzaGraphic"){
-		if(select.style.display != 'block'){
-			select.style.display = 'block';
+    atualGraphi() ;
+}
+function uncheckDados(){
+	var dados = document.getElementById("dados").children[1];
+	for(var index =0;index<semestre.length;index++){
+
+		if(semestre[index]!=null)
+		for(var j =0;j<opts.length;j++){
+			opts[j]=false
+			jsonData[semestre[index]].children[j]={}
+			dados.children[j].classList.remove("active")
 		}
-		select = document.getElementsByClassName("multiselect")[0]
-		if(select.style.display != 'none'){
-			select.style.display = 'none';
+	}
+	atualGraphi();
+}
+function checkDados(){
+	var dados = document.getElementById("dados").children[1];
+	for(var index =0;index<semestre.length;index++){
+		for(var j =0;j<opts.length;j++){
+			opts[j]=true
+			jsonData[semestre[index]].children[j]=eval(uneval(jsonArray[semestre[index]].json.children[j]));
+			dados.children[j].classList.add("active")
 		}
+	}
+	atualGraphi();
+}
+function alterQuest(question){
+	console.log("QuestNum"+question);
+	console.log("isGraphic"+isGraphic);
+	var i = parseInt(question);
+	var dados = document.getElementById("dados").children[1]
+	var selected = dados.children[i]
+	if(isGraphic == "treemap" || isGraphic == "sunburst" || isGraphic=="tifoldTree"){
+		
+		if(opts[i]==null)
+			opts[i]=true;
+		else
+			opts[i]=!opts[i];
+		if(opts[i]){
+			selected.classList.add("active")
+		}else{
+			selected.classList.remove("active")
+		}
+
+		//selected.classList.add("active")
+		for(var index =0;index<semestre.length;index++)
+			if(semestre[index]!=null)
+				for(var j =0;j<opts.length;j++)
+					if(opts[j])
+						jsonData[semestre[index]].children[j]=eval(uneval(jsonArray[semestre[index]].json.children[j]));
+					else
+						jsonData[semestre[index]].children[j]={}
 	}else{
-		if(select.style.display != 'none'){
-			select.style.display = 'none';
+		questionNum = question;
+		var activeds = dados.getElementsByClassName("active")
+		console.log(activeds);
+		for (var j=0;j<activeds.length;j++) {  
+			activeds[j].classList.remove("active")
 		}
-		select = document.getElementsByClassName("multiselect")[0]
-		if(select.style.display != 'block'){
-			select.style.display = 'block';
-		}
+		selected.classList.add("active")
+	}
+	console.log("Out AlterQuest In atualGraphi")
+	atualGraphi();
+}
+
+function eraseGraphics(){
+	var myNode = document.getElementById("graphics");
+	while (myNode.lastChild) {
+	    myNode.removeChild(myNode.lastChild);
 	}
 }
+function limpaLegenda(){
+	var myNode = document.getElementById("legenda");
+	while (myNode.lastChild) {
+	    myNode.removeChild(myNode.lastChild);
+	}
+	//leg.innerHTML = '';
+}
+function createItem(color){
+	var item = document.createElement("div");
+	item.id = "item";
+	var circle = document.createElement("div");
+	circle.className = "circle";
+	circle.style.background = color;
+	item.appendChild(circle);
+	return item;
+}
+
+function putLegenda(){
+	limpaLegenda();
+	console.log("Colocando Legenda")
+	var leg = document.getElementById("legenda");
+	var itens;
+	var passed=0;
+	if(semestre[0]!= null && jsonData[semestre[0]]!=null)
+	for(var j =0;j<colors.length;j++){
+		if(passed%4==0){
+			itens = document.createElement("div");
+			itens.id = "itens"
+		}
+		var i=0;
+		for(i=0;i<jsonData[semestre[0]].children.length;i++){
+			var pergs0 = jsonData[semestre[0]].children[i];
+
+			var pergs1 ;
+			//console.log(pergs0.name+" - "+colorsName[j])
+			if(semestre[1]!=null && jsonData[semestre[1]]!=null)
+				pergs1 = jsonData[semestre[1]].children[i];
+
+			if(pergs0.name != null && colorsName[j] == pergs0.name){
+				break;
+			}else if(pergs1!=null && pergs1.name != null && colorsName[j] == pergs1.name){
+				break;
+			}
+		}
+		if(i<jsonData[semestre[0]].children.length){
+			var j;
+			var item = createItem(colors[i]);
+			itens.appendChild(item);
+			leg.appendChild(itens);
+			item.innerHTML += colorsName[i];
+			passed++;
+		}
+		
+	}
+}
+function alterFont(value){
+	var cssAlter = document.getElementById("JsAlterFont");
+	cssAlter.innerHTML=".node {font: "+value+"px sans-serif;}#graphics text{font: "+value+"px sans-serif;}"
+
+	var links = document.getElementById("fontes").getElementsByTagName("li");
+	for(var i = 0;i<links.length;i++){
+		links[i].classList.remove("active")
+		if(links[i].getElementsByTagName("a")[0].id == value)
+			links[i].classList.add("active")
+	}
+}
+
 function treemap(){
 	isGraphic = "treemap";
-	ControldivGraf();
-	var margin = {top: 40, right: 10, bottom: 10, left: 10},
-	width = winWidth,
-	height = winHeight;
-	var treemap = d3.layout.treemap()
-	.size([width, height])
-	.sticky(true)
-	.value(function(d) { return d.size; });
-	var proporcao = (width>height)?(width/height):(height/width);
-	var div = d3.select("body").append("div")
-	.attr("id", "graphic")
-	.attr("class", "treeMap")
+	var divW=0
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			divW++;
+	}
+	console.log("------------DivW:"+divW);
+	var width=winWidth*((divW==2)?0.49:1);
+	grafPerc((divW==2)?49:100);
 
-	div = d3.select("#graphic").append("div")
-	.attr("id", "g")
-	.attr("class", "treeMap")
-	.style("position", "relative");
-
-	console.log("Até Agora ok");
-	d3.json(json, function(error, root) {
-		if (error) throw error;
-
-		root=eval(uneval(jsonData));
-		var node = div.datum(root).selectAll(".node")
-		.data(treemap.nodes)
-		.enter().append("div")
-		.attr("class", "node")
-		.attr("class", function(d) {T=d; return d.children ? "node pai" : "node filho"; })
-		.call(position)
-		.style("background", function(d) {return d.children ?  colored(d.name) : null })
-		.text(function(d) { return d.children ? null : ""; });
-
-		v=node;
-		console.log("Entrou");
-
-        if (rotulo==0) { 
-        	node.append("text")
-			.text(function(d) { return d.children ? null : d.parent.name+'-'+d.name+'-'+d.size; });
-        }else if (rotulo==1) {
-        	node.append("text")
-			.text(function(d) { return d.children ? null : d.name+'-'+d.size; });
-        }else if (rotulo==2) {
-        	node.append("text")
-			.text(function(d) { return d.children ? null : d.size; });
-        }else if (rotulo==3) {
-        	node.append("text")
-			.text(function(d) { return d.children ? null : d.name; });
-        }else if (rotulo==4) {
-        	node.append("text")
-			.text(function(d) { return d.children ? null : d.parent.name; });
-        }else if (rotulo==5) {
-        	node.append("text")
-			.text(function(d) { return d.children ? null : ""; });
-        }
-
-		node.append("title").text(function(d) { if(d.children){return d.name}});
-	});
-
-	function position() {
-		this.style("left", function(d) { return d.x + "px"; }) // deslocamento para a esquerda
-		.style("top", function(d) { return d.y + "px"; })
-		.style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
-		.style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; });
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			drawTreemap(i,semestre[i],width,winHeightT);
 	}
 };
 
-
-//Function that creates the sunburst graphic
 function sunburst(){
 	isGraphic = "sunburst";
-	ControldivGraf();
-	var width = winWidth,
-	height = winHeight,
-	radius = Math.min(width, height) / 2 - 20,
-	color = d3.scale.category20c();
-
-	var proporcao = (width>height)?(width/height):(height/width);
-
-	var svg = d3.select("body").append("svg")
-	.attr("class", "sunburst")
-	.attr("id", "graphic")
-	.append("g")
-	.attr("transform", "translate(" + width/2 + "," + height / 2 + ")");
-
-	var partition = d3.layout.partition()
-	.sort(null)
-	.size([2 * Math.PI, radius * radius])
-	.value(function(d) { return 1; });
-
-	var arc = d3.svg.arc()
-	.startAngle(function(d) { return d.x; })
-	.endAngle(function(d) { return d.x + d.dx; })
-	.innerRadius(function(d) { return Math.sqrt(d.y); })
-	.outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
-
-	d3.json(json, function(error, root) {
-		if (error) throw error;
-		root=jsonData;
-		var path = svg.datum(root).selectAll("path")
-		.data(partition.nodes)
-		.enter().append("path")
-			.attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
-			.attr("d", arc)
-			.style("stroke", "#fff")
-			.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-			.style("fill-rule", "evenodd")
-			.each(stash);
-	});
-
-	// Stash the old values for transition.
-	function stash(d) {
-		d.x0 = d.x;
-		d.dx0 = d.dx;
+	
+	console.log("Graphic:"+isGraphic);
+	var divW=0
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			divW++;
 	}
-
-	// Interpolate the arcs in data space.
-	function arcTween(a) {
-		var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
-		return function(t) {
-			var b = i(t);
-			a.x0 = b.x;
-			a.dx0 = b.dx;
-			return arc(b);
-		};
+	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			drawSunburst(i,semestre[i],width,winHeightT);
 	}
-
-	d3.select(self.frameElement).style("height", height + "px");
 };
 
 function tifoldTree(){
 	isGraphic = "tifoldTree";
-	ControldivGraf();
-	var width = winWidth,
-	height = winHeight,
-	radius = Math.min(width, height) / 2 - 20,
-	color = d3.scale.category20c();
-	var proporcao = (width>height)?(width/height):(height/width);
+	console.log("Graphic:"+isGraphic);
 
-	var tree = d3.layout.tree()
-	.size([360, radius - 120])
-	.separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
-
-	var diagonal = d3.svg.diagonal.radial()
-	.projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
-
-	var svg = d3.select("body").append("svg")
-	.attr("id", "graphic")
-	.attr("class", "tifoldTree")
-	.append("g")
-	.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-	d3.json(json, function(error, root) {
-		if (error) throw error;
-		root=jsonData;
-		var nodes = tree.nodes(root),
-		links = tree.links(nodes);
-
-		var link = svg.selectAll(".link")
-		.data(links)
-		.enter().append("path")
-		.attr("class", "link")
-		.attr("d", diagonal);
-
-		var node = svg.selectAll(".node")
-		.data(nodes)
-		.enter().append("g")
-		.attr("class", "node")
-		.attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-
-		node.append("circle")
-		.attr("r", 4.5);
-
-		node.append("text")
-		.attr("dy", ".31em")
-		.attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-		.attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
-		.text(function(d) { return d.name; });
-	});
-
-	d3.select(self.frameElement).style("height", radius*2 - 150 + "px");
+	var divW=0
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			divW++;
+	}
+	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			drawTifoldTree(i,semestre[i],width,winHeightT);
+	}
 }
 
 //Grafico em barras
 function barGraphic(){	var question = questionNum;
 	isGraphic = "barGraphic";
-	ControldivGraf();
-	var margin = {top: 120, right: 20, bottom: 30, left: 40},
-	width = 1460 - margin.left - margin.right,
-	height = 800 - margin.top - margin.bottom;
-	width = winWidth;height = winHeight;
-	var x = d3.scale.ordinal()
-	.rangeRoundBands([0, width], .1);
-
-	var y = d3.scale.linear()
-	.range([height, 0]);
-
-	var xAxis = d3.svg.axis()
-	.scale(x)
-	.orient("bottom");
-
-	var yAxis = d3.svg.axis()
-	.scale(y)
-	.orient("left");
-
-	var svg = d3.select("body").append("svg")
-	.attr("id", "graphic")
-
-	d3.json(json, function(error, root) {
-		if (error) throw error;
-		root=jsonArray[semestre].json;
-	x.domain(root.children[question].children.map(function(d) { return d.name; }));
-	y.domain([0, d3.max(root.children[question].children, function(d) { return d.size; })]);
-
-	svg.append("g")
-	.attr("class", "x axis")
-	.attr("transform", "translate(0," + height + ")")
-	.call(xAxis);
-
-	svg.append("g")
-	.attr("class", "y axis")
-	.call(yAxis)
-	.append("text")
-	.attr("transform", "rotate(-90)")
-	.attr("y", 6)
-	.attr("dy", ".71em")
-	.style("text-anchor", "end")
-	.text("Alunos");
-
-	svg.selectAll(".bar")
-	.data(root.children[question].children)
-	.enter().append("rect")
-	.attr("class", "bar")
-	.attr("x", function(d) { return x(d.name); })
-	.attr("width", x.rangeBand())
-	.attr("y", function(d) { return y(d.size); })
-	.attr("height", function(d) { return height - y(d.size); });
-	});
-
-	function type(d) {
-		d.size = +d.size;
-		return d;
+	console.log("Graphic:"+isGraphic);
+	var divW=0
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			divW++;
+	}
+	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			drawBarGraphic(i,semestre[i],width,winHeight-fontsize*3);
 	}
 }
 
@@ -423,111 +456,19 @@ function barGraphic(){	var question = questionNum;
 function pizzaGraphic(){
 	var question = questionNum;
 	isGraphic = "pizzaGraphic";
-	ControldivGraf();
-	var width=winWidth, height=winHeight,radius = Math.min(width, height) / 2;
-	
-	var color = d3.scale.ordinal()
-	.range(["#3376C5", "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-	var arc = d3.svg.arc()
-		.outerRadius(radius - 10)
-		.innerRadius(radius - 300);//deixar innerRadius igual a 0 pra que o gráfico vire um Gráfico de Pizza
-
-	var pie = d3.layout.pie()
-	.sort(null)
-	.value(function (d) {
-		return d.size;
-	});
-
-	var proporcao = (width>height)?(width/height):(height/width);
-	var svg = d3.select("body").append("svg")
-	.attr("id", "graphic")
-	.attr("class", "pizza")
-
-	.append("g")
-	.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-	d3.json(json, function(error, root) {
-		if (error) return console.warn(error);
-		root=jsonArray[semestre].json;
-		var g = svg.selectAll(".arc")
-		.data(pie(root.children[question].children))
-		.enter().append("g")
-		.attr("class", "arc");
-
-		g.append("path")
-		.attr("d", arc)
-		.style("fill", function (d) {
-
-			return color(d.data.name);
-		});
-
-		g.append("text")
-		.attr("transform", function (d) {
-			return "translate(" + arc.centroid(d) + ")";
-		})
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
-		.text(function (d) {
-			return d.data.name;
-		});
-	});		
-}
-
-
-
-function mudaRotulos(r){
-	if(r.value!=null)
-		rotulo=r.value;
-	else
-		rotulo=r;
-    atualGraphi() ;
-}
-function alterQuest(question){
-	questionNum = question;
-	mudaSemestre(null);
-}
-function showCheckboxes() {
-  var checkboxes = document.getElementById("selectTreeOpt");
-  if (!expanded) {
-    checkboxes.style.display = "block";
-    expanded = true;
-  } else {
-    checkboxes.style.display = "none";
-    expanded = false;
-  }
-}
-function alterQuestTree(value){
-	console.log("Alterando valor da Tree"+opts.length);
-	var check = document.getElementById("selectTreeOpt");
-	var i = parseInt(value);
-	var label = check.getElementsByTagName("label");
-	var input = check.getElementsByTagName("input");
-	opts[i] = check.children[i].children[0].checked;
-	if(opts[i]){
-		label[i].setAttribute("style","background-color:#30a294");
-	}else{
-		label[i].setAttribute("style","background-color:#fff");
+	console.log("Graphic:"+isGraphic);
+	var divW=0
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			divW++;
 	}
-
-	if(opts[i])
-		jsonData.children[i]=eval(uneval(jsonArray[semestre].json.children[i]));
-	else
-		jsonData.children[i]={}
-	atualGraphi();
-}
-function Click(event) {
-  var checkboxes = document.getElementById("selectTreeOpt");
-	if(winWidth==0 || winWidth==undefined){
-		/*winWidth=document.getElementById("graphic").offsetWidth;
-		winHeight=document.getElementById("graphic").offsetHeight/2;*/
-		winWidth= window.innerWidth*0.8;
-		winHeight= window.innerHeight;
+	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			drawPizza(i,semestre[i],width,winHeight);
 	}
-		
-	v = event.target;
-	if(!(event.target.parentNode.id == "selectTreeOpt" || event.target.parentNode.parentNode.id == "selectTreeOpt")  && event.target.classList[0] != "overSelect" && expanded){
-		checkboxes.style.display = "none";
-    	expanded = false;
-   	}
 }
-	
+function grafPerc(perc){
+	var cssAlter = document.getElementById("JsAlterGraphicPerc");
+	cssAlter.innerHTML=".graphic{width:"+perc+"%}";
+}

@@ -1,0 +1,127 @@
+#menuUp ul {
+	padding:0px;
+	background-color:#224D86;
+	list-style:none;
+	position: absolute;
+	left: 20%;
+}
+
+#menuUp ul li { 
+	display: block; 
+    float: left;
+}
+
+#menuUp ul li a {
+	padding: 6px 30px;
+	display: inline-block;
+	background-color:#fff;
+	color: #333;
+	text-decoration: none;
+	border-bottom:1px solid #000;
+}
+#menuUp ul li a.active {
+	border-bottom:1px solid #FFB482;
+}
+#menuUp ul li a:hover {
+	background-color:#fff;
+	color: #6D6D6D;
+	border-bottom:1px solid #FFB482;
+}
+
+#body{
+	height: 70%;width: 80%;position: absolute;left: 7.5%;
+	margin-top: 5%;
+}
+#menuDown{
+    margin-left: 10%;
+    position: absolute;
+}
+#menuDown * { 
+    padding:0; 
+    margin: 0; 
+    font: 15px georgia; 
+    list-style-type:none;}
+#menuDown { 
+    margin-top: 41%;
+    float: left;
+    line-height: 10px; 
+    left: 16%;}
+#menuDown a { 
+    display: block; 
+    text-decoration: none; 
+    color: #333;}
+#menuDown a:hover { color: #D6D6D6;}
+#menuDown ul li ul li a:hover { 
+    background: #6D6D6D; 
+    padding-left:9px;
+    border-left: solid 1px #000;
+}
+#menuDown ul li ul li.active { 
+    border-left: solid 2px #5c5;
+}
+#menuDown ul li ul li {
+    width: 140px; 
+    border: none; 
+    color: #EDEDED;  
+    padding-top: 3px; 
+    padding-bottom:3px; 
+    padding-left: 3px; 
+    padding-right: 3px; 
+    background: #fff;
+    z-index:1;
+    
+}
+#menuDown ul li ul li a { 
+    font: 11px arial; 
+    font-weight:normal; 
+    font-variant: small-caps; 
+    padding-top:3px; 
+    padding-bottom:3px;
+}
+#menuDown ul li {
+    float: left; 
+    width: 146px; 
+    font-weight: bold; 
+    border-top: solid 1px #224D86; 
+    background: #fff;
+    }
+#menuDown>ul>li:hover{
+    border-top: solid 1px #FFB482; 
+    
+}
+
+#menuDown ul li a { 
+    padding: 15px 10px;}
+#menuDown li{ 
+    position:relative; 
+    float:left;
+    
+}
+#menuDown ul li ul, #menuDown:hover ul li ul, #menuDown:hover ul li:hover ul li ul{ 
+    display:none;
+    list-style-type:none; 
+    width: 140px;
+
+}
+#menuDown:hover ul, #menuDown:hover ul li:hover ul, #menuDown:hover ul li:hover ul li:hover ul { 
+    display:block;
+    
+}
+#menuDown:hover ul li:hover ul li:hover ul { 
+    position: absolute;
+    margin-left: 145px;
+    margin-top: -22px;
+    font: 10px;
+}
+#menuDown:hover ul li:hover ul { 
+    position: absolute;
+    margin-top: 1px;
+    font: 10px;
+    
+}
+#menuDown>ul>li:hover>ul { 
+    bottom:100%;
+    border-bottom: 1px solid transparent;
+    border-top: solid 1px #FFB482; 
+    
+}

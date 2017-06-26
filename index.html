@@ -1,50 +1,78 @@
 <!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
-  <meta name="description" content="Tree Map Evasão 2015.1">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script src="js/libs/d3.js"></script>
-  <script type="text/javascript" src = "js/script.js"></script>
-  <meta name="author" content="Yuri Frota">
-</head>
-<body>
-  <div id="formulario">
-  <select name="tipoGrafico" onclick="atualGraphi('fromSelect')">
-    <option value="selecione">Tipo de gráfico</option>
-    <option value="sunburst">Sunburst</option>
-    <option value="treemap">TreeMap</option>
-    <option value="tifoldTree">Tifold Tree</option>
-    <option value="barGraphic">Bar Graph</option>
-    <option value="pizzaGraphic">Pizza Graph</option>
-  </select>
-  <select name="Semestre" onclick="mudaSemestre('fromSelect')">
-    <option value="">Semestre</option>
-    <option value="0">2015.1</option>
-    <option value="1">2015.2</option>
-    <option value="2">2016.1</option>
-  </select>
-  <select name="Rotulos" onclick="mudaRotulos(this)">
-    <option value="">Rotulos</option>
-    <option value="0">Categoria-Tipo-Tamanho</option>
-    <option value="1">Tipo-Tamanho</option>
-    <option value="2">Tamanho</option>
-    <option value="3">Tipo</option>
-    <option value="4">Categoria</option>
-    <option value="5">Nenhum</option>
-  </select>
-  <form>  
-    <div class="multiselect">
-      <div class="selectBox" onclick="showCheckboxes()">
-        <select>
-          <option>Select an option</option>
-        </select>
-        <div class="overSelect"></div>
-      </div>
-      <div id="selectTreeOpt"></div>
-    </div> 
-  </form>
-  <select name="questions" id="selectQuestion" onchange="alterQuest(this.value)"></select>
-  <script type="text/javascript">
-    document.getElementsByTagName("BODY")[0].addEventListener("click",Click);
-  </script>
-</body>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <meta name="description" content="GVD-SMD Analise de evasão">
+        <script type="text/javascript" src = "js/script.js"></script>
+        <script type="text/javascript" src = "js/draw.js"></script>
+        <script src="js/libs/d3.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/style-menu.css"/>
+        <link rel="stylesheet" href = "css/style-graph.css"/>
+        <style id="JsAlterFont">
+            .node {font: 10px sans-serif;}
+            #graphics text{font: 10px sans-serif;}
+        </style>
+        <style id="JsAlterTree"></style>
+        <style id="JsAlterGraphicPerc"></style>
+    </head>
+    <body style="height: 100%;width: 100%">
+    <header id="menuUp">
+        <ul>
+            <li><a href="#" id="sunburst" onclick="atualGraphi('sunburst')">Sunburst</a></li> 
+            <li><a href="#" id="tifoldTree" onclick="atualGraphi('tifoldTree')">Tifold Tree</a></li>
+            <li><a href="#" class="active" id="treemap" onclick="atualGraphi('treemap')">Treemap</a></li>
+            <li><a href="#" id="barGraphic" onclick="atualGraphi('barGraphic')">Bar Graph</a></li>
+            <li><a href="#" id="pizzaGraphic" onclick="atualGraphi('pizzaGraphic')">Pizza Graph</a></li>
+        </ul>   
+    </header>
+    <div id="body" style="">
+        <div id="graphics" style=""></div>
+        <div id="legenda" style=""></div>
+    </div>
+    <footer id="rodape">
+        <div id="menuDown">
+        <ul>
+        <li id="rotulos"><center><a href="#">Rotulos</a></center>
+            <ul>
+                <li><a href="#" id="5" onclick="mudaRotulos('5')">Categoria-Tipo</a></li>
+                <li><a href="#" id="1" onclick="mudaRotulos('1')">Tipo-Tamanho</a></li>
+                <li><a href="#" id="2" onclick="mudaRotulos('2')">Tamanho</a></li>
+                <li><a href="#" id="3" onclick="mudaRotulos('3')">Tipo</a></li>
+                <li><a href="#" id="6" onclick="mudaRotulos('6')">Nenhum</a></li>
+            </ul>
+        </li> 
+        <li id="semestres"><center><a href="#">Semestres</a></center>
+            <ul>
+                <li><a href="#" id="0" onclick="alterSemestre('0')">2015.1</a></li>
+                <li><a href="#" id="1" onclick="alterSemestre('1')">2015.2</a></li>
+                <li><a href="#" id="2" onclick="alterSemestre('2')">2016.1</a></li>
+            </ul>
+        </li> 
+        <li id="dados" ><center><a href="#">Dados</a></center>
+            <ul>
+                    <li><a href="#">Empty</a></li>
+            </ul>
+        </li> 
+        <li id="fontes"><center><a href="#">Tamanho da fonte</a></center>
+            <ul>
+                <li><a href="#" id="40" onclick="alterFont(40)">40px</a></li>
+                <li><a href="#" id="30" onclick="alterFont(30)">30px</a></li>
+                <li><a href="#" id="20" onclick="alterFont(20)">20px</a></li>
+                <li><a href="#" id="15" onclick="alterFont(15)">15px</a></li>
+                <li class="active"><a href="#" id="10" onclick="alterFont(10)">10px</a></li>
+                <li><a href="#" id="8" onclick="alterFont(8)">8px</a></li>
+            </ul>
+        </li>   
+        </ul>
+        </div>
+    </footer>
+    <script type="text/javascript">
+        winWidth=document.getElementById("graphics").offsetWidth;
+        winHeightT=document.getElementById("graphics").offsetHeight;
+        winHeight=document.getElementById("body").offsetHeight;
+        isGraphic="treemap";
+        
+    </script>
+    </body>
+</html>

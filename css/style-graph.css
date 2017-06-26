@@ -1,0 +1,186 @@
+html{
+  width: 100%;
+  height:100%; 
+}
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: auto;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+#selectQuestion{
+  display: none;
+}
+#formulario{
+  position: relative;
+  float: left;
+  width:20%;
+}
+#ColumnRight{
+  float: left;
+  width:80%;
+  height:100%;
+  background-color: #fff;
+}
+#graphics{
+  float: left;
+  width:100%;
+  height:80%;
+  min-height:80%;
+}
+#legenda{
+  float: left;
+  width:100%;
+  background-color: #fff;
+  overflow:auto;
+}
+.graphic{
+  float: left;
+  width:49%;
+  height:100%;
+  background-color: #fff;
+}
+.graphic:first-child{
+  margin-right:2%;
+}
+.node {
+  border: solid 1px white;
+  font: 22px sans-serif; 
+  line-height: 20px;
+  overflow: hidden;
+  position: absolute;
+  
+  text-indent: 2px;
+  text-align: center;
+}
+#graphic div #g:first-child{
+  position: absolute;
+  display: none;
+}
+.label{
+ height: 30px;
+}
+#colorLabel{
+  width: 200px;
+  position: absolute;
+  left: -447px;
+  top: 170px;
+}
+#textLabel{
+  position: absolute;
+  left: -378px;
+  top: 136px;
+}
+.Circles{
+  padding-top: 1px;
+}
+.textL{
+  font-size: 16px;
+  padding-top: 19px;
+}
+p{
+  margin: 0px;
+}
+.tifoldTree{
+  margin-top: 25px;
+}
+
+#treeStuff{
+  display:none;
+}
+#selectQuestionBar{
+  display: none;
+}
+#selectQuestionPizza{
+  display: none;
+}
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+/* Bar graphic Stuff*/
+.bar {
+  fill: #73becb;
+}
+
+.bar:hover {
+  fill: #56929c;
+}
+
+.axis {
+  font: 15px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+
+.multiselect {
+  width: 200px;
+}
+
+.selectBox {
+  position: relative;
+}
+
+.selectBox select {
+  width: 100%;
+  font-weight: bold;
+}
+
+.overSelect {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#selectTreeOpt {
+  display: none;
+  border: 1px #dadada solid;
+}
+
+#selectTreeOpt label {
+  display: block;
+}
+
+#selectTreeOpt label:hover {
+  background-color: #123;
+}
+#selectTreeOpt input[type=checkbox]{
+  display: none;
+}
+
+.circle{
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  float: left;
+  margin-top: 5px;
+  border: 0.5px solid #000;
+}
+#itens{
+  float:left;
+  overflow: auto;
+  margin-right: 2.5%;
+  margin-top: 2%;
+}
+#item{
+  margin-bottom: 2%;
+  max-width: 15em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
