@@ -19,7 +19,8 @@ var colorsName = [];
 var fontsize = 10;
 var jsonArray=[{nome:"20151",origem:"json-completo/2015.1-completo.json",json:null},
 {nome:"20152",origem:"json-completo/2015.2-completo.json",json:null},
-{nome:"20161",origem:"json-completo/2016.1-completo.json",json:null}];
+{nome:"20161",origem:"json-completo/2016.1-completo.json",json:null},
+{nome:"20162",origem:"json-completo/2016.2-completo.json",json:null}];
 
 var selectQuestArray = []; 
 var selectTreeArray = [];
@@ -126,6 +127,10 @@ function atualGraphi(fromSelect){
 		mudaSemestre();
 	}
 	eraseGraphics();
+
+	
+
+
 	switch(isGraphic){
 		case "treemap":
 			treemap();
@@ -142,12 +147,15 @@ function atualGraphi(fromSelect){
 		case "pizzaGraphic":
 			pizzaGraphic();
 			break;
+		case "radarGraphic":
+			RadarGraphic();
+			break;
 		default:
 			console.log("Não foi possivel atualizar gráfico isGraphic invalido");
 			break;
 	}	
 	var leg = document.getElementById("legenda");
-	if(isGraphic == "barGraphic" || isGraphic == "pizzaGraphic"){
+	if(isGraphic == "barGraphic" || isGraphic == "pizzaGraphic" || isGraphic=="radarGraphic"){
 		leg.style.display = "none"
 	}else{
 		leg.style.display = "block"
@@ -452,6 +460,33 @@ function barGraphic(){	var question = questionNum;
 	}
 }
 
+function RadarGraphic(){
+	var question = questionNum;
+	isGraphic = "radarGraphic";
+
+	
+
+	console.log("Graphic:"+isGraphic);
+	var divW=0;
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null)
+			divW++;
+	}
+	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
+	var mycfg = {
+	  w: width,
+	  h: winHeight,
+	  maxValue: 0.6,
+	  levels: 6,
+	  ExtraWidthX: 300
+	}
+	for(var i =0;i<2;i++){
+		if(semestre[i]!=null){
+			drawRadar(i,semestre[i],width*0.8,winHeight*0.9)
+		}
+	}
+	
+}
 //Grafico pizza
 function pizzaGraphic(){
 	var question = questionNum;
