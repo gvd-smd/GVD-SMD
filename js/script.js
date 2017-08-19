@@ -49,10 +49,71 @@ function colored(name){
 }
 
 
-
+function mudaSemestre(value,Index){
+	var fromIndex = 0;
+	if(Index!=null)
+		fromIndex = Index;
+	console.log("Comp value!=null"+value)
+    console.log("Semestres Dif:"+oldsemestre[fromIndex]+" - "+value)
+    if(oldsemestre[fromIndex]!=semestre[fromIndex] || Index!=null){
+    	console.log("entrou pois é diferentes"+fromIndex)
+    	console.log("JsonData=");
+		console.log(jsonData);
+		console.log("semestre=")
+		console.log(semestre)
+    	if(value!= null && semestre[fromIndex] != null && jsonArray[semestre[fromIndex]].json==null){
+    		console.log("load options and jsonArray ");
+    		loadJSON(jsonArray[semestre[fromIndex]].origem, function(data) { jsonArray[semestre[fromIndex]].json=data ;jsonlido=true;addOptions(fromIndex);}, function(xhr) { console.error(xhr); });
+    	}else{//renovando jsonData
+        	var counterCheck=0;
+			for(var i =0 ;i<semestresCheck.length;i++)
+				if(semestresCheck[i]){
+					jsonData[i] = eval(uneval(jsonArray[i].json))
+					semestre[counterCheck++]=i;
+				}else{
+					jsonData[i] = null;
+				}
+			console.log("JsonData=");
+			console.log(jsonData);
+        	for(var i = counterCheck;i<semestresCheck.length;i++){
+        		semestre.splice(counterCheck, 1);
+	        }
+	        jsonlido=true;
+	        //atualGraphi();
+        }
+    	var	dados = document.getElementById("dados").children[1];
+		while (dados.hasChildNodes() ) { dados.removeChild(dados.firstChild); }
+		selectApagado=true;
+		addOptions(fromIndex);//Bug
+		//Prol está aqui a logica de carregar o Jsondata pois no renovando Json tento carregar todos e aqui ele tem a intenção de carregar os novos e os antigos.
+    }else{
+    	atualGraphi();
+    }
+}
+function loadJSON(path, success, error){
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                if (success)
+                    success(JSON.parse(xhr.responseText));
+            } else {
+                if (error)
+                    error(xhr);
+            }
+        }
+    };
+    xhr.open("GET", path, true);
+    xhr.send();
+}
 function addOptions(fromIndex){
+	console.log("addOptions="+(jsonlido && selectApagado))
 	if(jsonlido && selectApagado){
-        jsonData[semestre[fromIndex]] = eval(uneval(jsonArray[semestre[fromIndex]].json))
+		console.log("fromIndex"+fromIndex);
+		if(semestre[fromIndex]!=null)
+        	jsonData[semestre[fromIndex]] = eval(uneval(jsonArray[semestre[fromIndex]].json))
+    	else
+    		fromIndex=0;
 		jsonlido = false;
 		selectApagado = frameElement;
 		var	dados = document.getElementById("dados");
@@ -62,8 +123,6 @@ function addOptions(fromIndex){
         var ul = document.createElement("ul");
 
 	    for(var i =0;i< jsonArray[semestre[fromIndex]].json.children.length;i++){
-			
-
             var liChild = document.createElement("li");
             var aChild = document.createElement("a");
             aChild.href="#";
@@ -111,6 +170,8 @@ function addOptions(fromIndex){
 		}else{
 			cssAlter.innerHTML=".treeLi {display:none} #graphics{height:100%}"
 		}
+		console.log("JsonData=");
+		console.log(jsonData);
 		atualGraphi();
 	}
 }
@@ -127,9 +188,6 @@ function atualGraphi(fromSelect){
 		mudaSemestre();
 	}
 	eraseGraphics();
-
-	
-
 
 	switch(isGraphic){
 		case "treemap":
@@ -166,18 +224,26 @@ function atualGraphi(fromSelect){
 function alterSemestre(value){
 	console.log("Open alterSemestre")
 	var rotulos = document.getElementById("semestres").getElementsByTagName("li");
-	console.log(value)
+	console.log("value"+value)
 	var checkeds=0;
-	
-	console.log(checkeds);
 	if(semestresCheck[value]!=true){
 		for(var i =0 ;i<semestresCheck.length;i++)
 			checkeds+=(semestresCheck[i])?1:0;
-		if(checkeds<2){
+		if(checkeds<4){
 			semestresCheck[value]=true;
 		}
 	}else{
 		semestresCheck[value]=false;
+		var index=-1;
+		for(var i=0;i<semestre.length;i++){
+			if(semestre[i]==value){
+				index=i;break;
+			}
+		}
+		if(index!=-1){
+			semestre[index]=null;
+			semestre.splice(index, 1)
+		}
 	}
 	var indexJson = 0;
 	for(var i = 0;i<rotulos.length;i++){
@@ -192,61 +258,47 @@ function alterSemestre(value){
 			semestre[indexJson++]=i;
 		}
 	}
-	if(indexJson<1 || indexJson>2){
+	if(indexJson<1 || indexJson>4){
 		semestre[0]=null;
 		semestre[1]=null;
 		eraseGraphics();
 		limpaLegenda();
 	}else if(indexJson==1){
 		semestre[1]=null;
-		mudaSemestre(0);
+		mudaSemestre(value);
 	}else{
+		eraseGraphics();
 		if(jsonData[0] == null)
 			mudaSemestre(value,0);
-		else
-			mudaSemestre(value,1);
+		else{
+			var index=-1;
+			for(var i=0;i<semestre.length;i++){
+				if(semestre[i]==value){
+					index=i;break;
+				}
+			}
+			if(index==-1){
+				for(var i=0;i<semestre.length;i++){
+					if(semestre[i]==null){
+						index=i;break;
+					}
+				}
+			}
+			console.log("index of semestre"+index);
+			if(index!=-1){
+				semestre[index]=value;
+				mudaSemestre(value,index);
+			}else{
+				index=semestre.length;
+				semestre[index]=value;
+				mudaSemestre(value,index);
+			}
+		}
 	}
 
 	
 }
-function mudaSemestre(value,Index){
-	var fromIndex = 0;
-	if(Index!=null)
-		fromIndex = Index;
-	console.log("Comp value!=null"+value)
-    console.log("Semestres Dif:"+oldsemestre[fromIndex]+" - "+value)
-    if(oldsemestre[fromIndex]!=semestre[fromIndex] || Index!=null){
-    	console.log("entrou pois é diferentes"+fromIndex)
-    	if(jsonArray[semestre[fromIndex]].json==null)
-    		loadJSON(jsonArray[semestre[fromIndex]].origem, function(data) { jsonArray[semestre[fromIndex]].json=data ;jsonlido=true;addOptions(fromIndex);}, function(xhr) { console.error(xhr); });
-        else{
-        	jsonlido=true;
-        }
-        //var selectQuestion_list = document.getElementById("dados");
-        var	dados = document.getElementById("dados").children[1];
-		while (dados.hasChildNodes() ) {  dados.removeChild(dados.firstChild);}
-		selectApagado=true;
-		addOptions(fromIndex);
-    }else{
-    	atualGraphi();
-    }
-}
-function loadJSON(path, success, error){
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(){
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                if (success)
-                    success(JSON.parse(xhr.responseText));
-            } else {
-                if (error)
-                    error(xhr);
-            }
-        }
-    };
-    xhr.open("GET", path, true);
-    xhr.send();
-}
+
 
 function mudaRotulos(r){
 	rotulo=r;
@@ -398,17 +450,17 @@ function alterFont(value){
 function treemap(){
 	isGraphic = "treemap";
 	var divW=0
-	for(var i =0;i<2;i++){
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
 			divW++;
 	}
 	console.log("------------DivW:"+divW);
-	var width=winWidth*((divW==2)?0.49:1);
-	grafPerc((divW==2)?49:100);
 
-	for(var i =0;i<2;i++){
+	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
+	var height=winHeightT*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
-			drawTreemap(i,semestre[i],width,winHeightT);
+			drawTreemap(i,semestre[i],width,height);
 	}
 };
 
@@ -417,14 +469,15 @@ function sunburst(){
 	
 	console.log("Graphic:"+isGraphic);
 	var divW=0
-	for(var i =0;i<2;i++){
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
-	for(var i =0;i<2;i++){
+	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
+	var height=winHeightT*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
-			drawSunburst(i,semestre[i],width,winHeightT);
+			drawSunburst(i,semestre[i],width,height);
 	}
 };
 
@@ -433,14 +486,15 @@ function tifoldTree(){
 	console.log("Graphic:"+isGraphic);
 
 	var divW=0
-	for(var i =0;i<2;i++){
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
-	for(var i =0;i<2;i++){
+	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
+	var height=winHeightT*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
-			drawTifoldTree(i,semestre[i],width,winHeightT);
+			drawTifoldTree(i,semestre[i],width,height);
 	}
 }
 
@@ -449,43 +503,43 @@ function barGraphic(){	var question = questionNum;
 	isGraphic = "barGraphic";
 	console.log("Graphic:"+isGraphic);
 	var divW=0
-	for(var i =0;i<2;i++){
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
-	for(var i =0;i<2;i++){
+	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
+	var height=winHeight*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
-			drawBarGraphic(i,semestre[i],width,winHeight-fontsize*3);
+			drawBarGraphic(i,semestre[i],width,height-fontsize*3);
 	}
+
 }
 
 function RadarGraphic(){
 	var question = questionNum;
 	isGraphic = "radarGraphic";
-
-	
-
 	console.log("Graphic:"+isGraphic);
 	var divW=0;
-	for(var i =0;i<2;i++){
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
+	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
+	var height=winHeight*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+
 	var mycfg = {
 	  w: width,
-	  h: winHeight,
+	  h: height,
 	  maxValue: 0.6,
 	  levels: 6,
 	  ExtraWidthX: 300
 	}
-	for(var i =0;i<2;i++){
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null){
-			drawRadar(i,semestre[i],width*0.8,winHeight*0.9)
+			drawRadar(i,semestre[i],width*0.8,height*0.9)
 		}
 	}
-	
 }
 //Grafico pizza
 function pizzaGraphic(){
@@ -493,17 +547,28 @@ function pizzaGraphic(){
 	isGraphic = "pizzaGraphic";
 	console.log("Graphic:"+isGraphic);
 	var divW=0
-	for(var i =0;i<2;i++){
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW==2)?0.49:1);grafPerc((divW==2)?49:100);
-	for(var i =0;i<2;i++){
+	console.log("Pizza graphics"+divW)
+	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
+	var height=winHeight*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
-			drawPizza(i,semestre[i],width,winHeight);
+			drawPizza(i,semestre[i],width,height);
 	}
 }
 function grafPerc(perc){
 	var cssAlter = document.getElementById("JsAlterGraphicPerc");
 	cssAlter.innerHTML=".graphic{width:"+perc+"%}";
 }
+function grafPercW(perc){
+	var cssAlter = document.getElementById("JsAlterGraphicPerc");
+	cssAlter.innerHTML=".graphic{width:"+perc+"%}";
+}
+function grafPercH(perc){
+	var cssAlter = document.getElementById("JsAlterGraphicPerc");
+	cssAlter.innerHTML=".graphic{height:"+perc+"%}";
+}
+

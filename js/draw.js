@@ -158,7 +158,7 @@ function drawBarGraphic(i,semest,width,height){
 	.attr("class","graphic")
 
 	var root = eval(uneval(jsonData[semest]));
-	console.log(semest + " - " + jsonData[semest] + " - " +root.children+" - ");
+	//console.log(semest + " - " + jsonData[semest] + " - " +root.children+" - ");
 	x.domain(root.children[questionNum].children.map(function(d) { return d.name; }));
 	y.domain([0, d3.max(root.children[questionNum].children, function(d) { return d.size; })]);
 
