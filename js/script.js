@@ -456,10 +456,13 @@ function treemap(){
 	}
 	console.log("------------DivW:"+divW);
 
-	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
-	var height=winHeightT*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	var width=winWidth*((divW>=2)?0.49:1);
+	var height=winHeightT*((divW>2)?0.49:1);
+	grafPercWH(divW);
 	for(var i =0;i<4;i++){
-		if(semestre[i]!=null)
+		if(i==divW-1 && divW==3)
+			drawTreemap(i,semestre[i],winWidth,height);
+		else if(semestre[i]!=null)
 			drawTreemap(i,semestre[i],width,height);
 	}
 };
@@ -473,10 +476,14 @@ function sunburst(){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
-	var height=winHeightT*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	var width=winWidth*((divW>=2)?0.49:1);
+	var height=winHeightT*((divW>2)?0.49:1);
+
+	grafPercWH(divW);
 	for(var i =0;i<4;i++){
-		if(semestre[i]!=null)
+		if(i==divW-1 && divW==3)
+			drawSunburst(i,semestre[i],winWidth,height);
+		else if(semestre[i]!=null)
 			drawSunburst(i,semestre[i],width,height);
 	}
 };
@@ -490,10 +497,15 @@ function tifoldTree(){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
-	var height=winHeightT*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	var width=winWidth*((divW>=2)?0.49:1);
+	var height=winHeightT*((divW>2)?0.49:1);
+
+	grafPercWH(divW);
+
 	for(var i =0;i<4;i++){
-		if(semestre[i]!=null)
+		if(i==divW-1 && divW==3)
+			drawTifoldTree(i,semestre[i],winWidth,height);
+		else if(semestre[i]!=null)
 			drawTifoldTree(i,semestre[i],width,height);
 	}
 }
@@ -507,10 +519,14 @@ function barGraphic(){	var question = questionNum;
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
-	var height=winHeight*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	var width=winWidth*((divW>=2)?0.49:1);
+	var height=winHeight*((divW>2)?0.49:1);
+
+	grafPercWH(divW);
 	for(var i =0;i<4;i++){
-		if(semestre[i]!=null)
+		if(i==divW-1 && divW==3)
+			drawBarGraphic(i,semestre[i],winWidth,height-fontsize*3);
+		else if(semestre[i]!=null)
 			drawBarGraphic(i,semestre[i],width,height-fontsize*3);
 	}
 
@@ -525,9 +541,10 @@ function RadarGraphic(){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
-	var height=winHeight*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+	var width=winWidth*((divW>=2)?0.49:1);
+	var height=winHeight*((divW>2)?0.49:1);
 
+	grafPercWH(divW);
 	var mycfg = {
 	  w: width,
 	  h: height,
@@ -536,8 +553,10 @@ function RadarGraphic(){
 	  ExtraWidthX: 300
 	}
 	for(var i =0;i<4;i++){
-		if(semestre[i]!=null){
-			drawRadar(i,semestre[i],width*0.8,height*0.9)
+		if(i==divW-1 && divW==3)
+			drawRadar(i,semestre[i],winWidth,height);
+		else if(semestre[i]!=null){
+			drawRadar(i,semestre[i],width,height)
 		}
 	}
 }
@@ -552,23 +571,35 @@ function pizzaGraphic(){
 			divW++;
 	}
 	console.log("Pizza graphics"+divW)
-	var width=winWidth*((divW>=2)?0.49:1);grafPercW((divW>=2)?49:100);
-	var height=winHeight*((divW>2)?0.49:1);grafPercH((divW>2)?49:100);
+
+	var width=winWidth*((divW>=2)?0.49:1);
+	var height=winHeight*((divW>2)?0.49:1);
+	grafPercWH(divW);
 	for(var i =0;i<4;i++){
-		if(semestre[i]!=null)
+		if(i==divW-1 && divW==3)
+			drawPizza(i,semestre[i],winWidth,height);
+		else if(semestre[i]!=null)
 			drawPizza(i,semestre[i],width,height);
 	}
 }
-function grafPerc(perc){
+function grafPercWH(grafs){
 	var cssAlter = document.getElementById("JsAlterGraphicPerc");
-	cssAlter.innerHTML=".graphic{width:"+perc+"%}";
+	var strin = "";
+	strin =".graphic{width:"+((grafs>=2)?49:100)+"%; height:"+((grafs>2)?49:100)+"%} ";
+	if(grafs==3){
+		cssAlter.innerHTML=strin+".graphic:nth-child(3){width: 100%;margin-top: 1%;}";
+	}else if(grafs==4){
+		cssAlter.innerHTML=strin+".graphic:nth-child(3){margin-right: 2%;margin-top: 1%;} .graphic:nth-child(4){margin-top: 1%;}";
+	}else{
+		cssAlter.innerHTML=strin;
+	}
 }
-function grafPercW(perc){
+/*function grafPercW(perc){
 	var cssAlter = document.getElementById("JsAlterGraphicPerc");
 	cssAlter.innerHTML=".graphic{width:"+perc+"%}";
 }
 function grafPercH(perc){
 	var cssAlter = document.getElementById("JsAlterGraphicPerc");
 	cssAlter.innerHTML=".graphic{height:"+perc+"%}";
-}
+}*/
 

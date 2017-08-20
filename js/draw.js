@@ -191,6 +191,7 @@ function drawBarGraphic(i,semest,width,height){
 }
 
 function drawPizza(i,semest,width,height){
+	console.log("WIDTH:"+width);
 	var radius = Math.min(width, height) / 2;
 	
 	var color = d3.scale.ordinal()
