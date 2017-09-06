@@ -13,7 +13,6 @@ var json="json-completo/empty.json";
 var winWidth=0,winHeight=0;
 var testeTree;
 var colorIndex;
-//var colors = ['#2d335b', '#535b2d', '#494949', '#d7d7d7', '9ad4ce','#9c6ce4' ,'#63c0df' ,'#ffffff' ,'#fff06c ','#ffb76c','#ebd7dc','#dbd7dc','#cbd7dc','#bbd7dc','#abd7dc',];
 var colors = ['#F5F5F5','#F5F5DC','#FDF5E6','#abc2dc','#FFF8DC','#FAEBD7','#FFE4C4','#E6E6FA','#FFE4E1','#E0FFFF','#FFE4B5','#FFEFD5','#F0F8FF','#FFFACD','#abd7dc','bbd7dc']
 var colorsName = [];
 var fontsize = 10;
@@ -25,6 +24,8 @@ var jsonArray=[{nome:"20151",origem:"json-completo/2015.1-completo.json",json:nu
 var selectQuestArray = []; 
 var selectTreeArray = [];
 var semestresCheck = [];
+
+var comment_script = true;
 
 function colored(name){
 	var i =0;
@@ -53,28 +54,30 @@ function mudaSemestre(value,Index){
 	var fromIndex = 0;
 	if(Index!=null)
 		fromIndex = Index;
-	console.log("Comp value!=null"+value)
-    console.log("Semestres Dif:"+oldsemestre[fromIndex]+" - "+value)
+	if(comment_script) console.log("Comp value!=null"+value)
+    if(comment_script) console.log("Semestres Dif:"+oldsemestre[fromIndex]+" - "+value)
     if(oldsemestre[fromIndex]!=semestre[fromIndex] || Index!=null){
-    	console.log("entrou pois é diferentes"+fromIndex)
-    	console.log("JsonData=");
-		console.log(jsonData);
-		console.log("semestre=")
-		console.log(semestre)
+    	if(comment_script) {
+			console.log("entrou pois é diferentes"+fromIndex)
+			/*console.log("JsonData=");
+			console.log(jsonData);
+			console.log("semestre=")
+			console.log(semestre)*/
+		}
     	if(value!= null && semestre[fromIndex] != null && jsonArray[semestre[fromIndex]].json==null){
-    		console.log("load options and jsonArray ");
+    		if(comment_script) console.log("load options and jsonArray ");
     		loadJSON(jsonArray[semestre[fromIndex]].origem, function(data) { jsonArray[semestre[fromIndex]].json=data ;jsonlido=true;addOptions(fromIndex);}, function(xhr) { console.error(xhr); });
     	}else{//renovando jsonData
         	var counterCheck=0;
 			for(var i =0 ;i<semestresCheck.length;i++)
 				if(semestresCheck[i]){
-					jsonData[i] = eval(uneval(jsonArray[i].json))
+					//jsonData[i] = eval(uneval(jsonArray[i].json))
 					semestre[counterCheck++]=i;
+					UpdateJson(counterCheck-1);
 				}else{
 					jsonData[i] = null;
 				}
-			console.log("JsonData=");
-			console.log(jsonData);
+			//if(comment_script){ console.log("JsonData="); console.log(jsonData); }
         	for(var i = counterCheck;i<semestresCheck.length;i++){
         		semestre.splice(counterCheck, 1);
 	        }
@@ -106,14 +109,32 @@ function loadJSON(path, success, error){
     xhr.open("GET", path, true);
     xhr.send();
 }
+function isTree(){
+	return (isGraphic == "treemap" || isGraphic == "sunburst" || isGraphic=="tifoldTree");
+}
+function UpdateJson(Id){
+	if(comment_script) console.log("UpdateJson id:"+Id);
+	if(jsonData[semestre[Id]] == null || !isTree())
+        jsonData[semestre[Id]] = eval(uneval(jsonArray[semestre[Id]].json))
+    else 
+		for(var j =0;j<opts.length;j++)
+			if(opts[j])
+				jsonData[semestre[Id]].children[j]=eval(uneval(jsonArray[semestre[Id]].json.children[j]));
+			else
+				jsonData[semestre[Id]].children[j]={}
+}
+
 function addOptions(fromIndex){
-	console.log("addOptions="+(jsonlido && selectApagado))
+	if(comment_script) console.log("addOptions="+(jsonlido && selectApagado))
 	if(jsonlido && selectApagado){
-		console.log("fromIndex"+fromIndex);
-		if(semestre[fromIndex]!=null)
-        	jsonData[semestre[fromIndex]] = eval(uneval(jsonArray[semestre[fromIndex]].json))
-    	else
+		if(comment_script) console.log("fromIndex"+fromIndex);
+		if(semestre[fromIndex]!=null){
+        	for(var index =0;index<semestre.length;index++)
+				if(semestre[index]!=null)
+					UpdateJson(index);
+		}else
     		fromIndex=0;
+
 		jsonlido = false;
 		selectApagado = frameElement;
 		var	dados = document.getElementById("dados");
@@ -133,7 +154,7 @@ function addOptions(fromIndex){
         		
 
             liChild.append(aChild);
-            if(isGraphic == "treemap" || isGraphic == "sunburst" || isGraphic == "tifoldTree" ){
+            if(isTree()){
             	if(opts[i])
             		liChild.classList.add("active")
             	else
@@ -145,6 +166,7 @@ function addOptions(fromIndex){
 
             dados.append(liChild);
 		}
+
 		var liChild = document.createElement("li");
         var aChild = document.createElement("a");
         aChild.href="#";
@@ -161,17 +183,19 @@ function addOptions(fromIndex){
         aChild.setAttribute( "onclick", "javascript: checkDados();" );
         aChild.innerHTML="Selecionar Todos";
         liChild.append(aChild);
-        liChild.classList.add("treeLi")
+        liChild.classList.add("treeLi")//TODO: Alter from treeLi to treeOpts
 		dados.append(liChild);
 
+
 		var cssAlter = document.getElementById("JsAlterTree");
-		if(isGraphic == "treemap" || isGraphic == "sunburst" || isGraphic == "tifoldTree" ){
+		if(isTree()){
 			cssAlter.innerHTML=".treeLi {display:block} #graphics{height:80%}"
 		}else{
 			cssAlter.innerHTML=".treeLi {display:none} #graphics{height:100%}"
 		}
-		console.log("JsonData=");
-		console.log(jsonData);
+
+		if(comment_script) console.log("JsonData=");
+		if(comment_script) console.log(jsonData);
 		atualGraphi();
 	}
 }
@@ -184,7 +208,7 @@ function atualGraphi(fromSelect){
 			if(links[i].id == isGraphic)
 				links[i].classList.add("active")
 		}
-		console.log("o q chegou"+isGraphic);
+		if(comment_script) console.log("o q chegou"+isGraphic);
 		mudaSemestre();
 	}
 	eraseGraphics();
@@ -209,11 +233,11 @@ function atualGraphi(fromSelect){
 			RadarGraphic();
 			break;
 		default:
-			console.log("Não foi possivel atualizar gráfico isGraphic invalido");
+			if(comment_script) console.log("Não foi possivel atualizar gráfico isGraphic invalido");
 			break;
 	}	
 	var leg = document.getElementById("legenda");
-	if(isGraphic == "barGraphic" || isGraphic == "pizzaGraphic" || isGraphic=="radarGraphic"){
+	if(!isTree()){
 		leg.style.display = "none"
 	}else{
 		leg.style.display = "block"
@@ -222,9 +246,9 @@ function atualGraphi(fromSelect){
 	
 }
 function alterSemestre(value){
-	console.log("Open alterSemestre")
+	if(comment_script) console.log("Open alterSemestre")
 	var rotulos = document.getElementById("semestres").getElementsByTagName("li");
-	console.log("value"+value)
+	if(comment_script) console.log("value"+value)
 	var checkeds=0;
 	if(semestresCheck[value]!=true){
 		for(var i =0 ;i<semestresCheck.length;i++)
@@ -284,7 +308,7 @@ function alterSemestre(value){
 					}
 				}
 			}
-			console.log("index of semestre"+index);
+			if(comment_script) console.log("index of semestre"+index);
 			if(index!=-1){
 				semestre[index]=value;
 				mudaSemestre(value,index);
@@ -336,12 +360,12 @@ function checkDados(){
 	atualGraphi();
 }
 function alterQuest(question){
-	console.log("QuestNum"+question);
-	console.log("isGraphic"+isGraphic);
+	if(comment_script) console.log("QuestNum"+question);
+	if(comment_script) console.log("isGraphic"+isGraphic);
 	var i = parseInt(question);
 	var dados = document.getElementById("dados").children[1]
 	var selected = dados.children[i]
-	if(isGraphic == "treemap" || isGraphic == "sunburst" || isGraphic=="tifoldTree"){
+	if(isTree()){
 		
 		if(opts[i]==null)
 			opts[i]=true;
@@ -356,21 +380,22 @@ function alterQuest(question){
 		//selected.classList.add("active")
 		for(var index =0;index<semestre.length;index++)
 			if(semestre[index]!=null)
-				for(var j =0;j<opts.length;j++)
+				UpdateJson(index);
+				/*for(var j =0;j<opts.length;j++)
 					if(opts[j])
 						jsonData[semestre[index]].children[j]=eval(uneval(jsonArray[semestre[index]].json.children[j]));
 					else
-						jsonData[semestre[index]].children[j]={}
+						jsonData[semestre[index]].children[j]={}*/
 	}else{
 		questionNum = question;
 		var activeds = dados.getElementsByClassName("active")
-		console.log(activeds);
+		if(comment_script) console.log(activeds);
 		for (var j=0;j<activeds.length;j++) {  
 			activeds[j].classList.remove("active")
 		}
 		selected.classList.add("active")
 	}
-	console.log("Out AlterQuest In atualGraphi")
+	if(comment_script) console.log("Out AlterQuest In atualGraphi")
 	atualGraphi();
 }
 
@@ -399,7 +424,7 @@ function createItem(color){
 
 function putLegenda(){
 	limpaLegenda();
-	console.log("Colocando Legenda")
+	if(comment_script) console.log("Colocando Legenda")
 	var leg = document.getElementById("legenda");
 	var itens;
 	var passed=0;
@@ -414,7 +439,7 @@ function putLegenda(){
 			var pergs0 = jsonData[semestre[0]].children[i];
 
 			var pergs1 ;
-			//console.log(pergs0.name+" - "+colorsName[j])
+			//if(comment_script) console.log(pergs0.name+" - "+colorsName[j])
 			if(semestre[1]!=null && jsonData[semestre[1]]!=null)
 				pergs1 = jsonData[semestre[1]].children[i];
 
@@ -454,7 +479,7 @@ function treemap(){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	console.log("------------DivW:"+divW);
+	if(comment_script) console.log("------------DivW:"+divW);
 
 	var width=winWidth*((divW>=2)?0.49:1);
 	var height=winHeightT*((divW>2)?0.49:1);
@@ -470,7 +495,7 @@ function treemap(){
 function sunburst(){
 	isGraphic = "sunburst";
 	
-	console.log("Graphic:"+isGraphic);
+	if(comment_script) console.log("Graphic:"+isGraphic);
 	var divW=0
 	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
@@ -490,7 +515,7 @@ function sunburst(){
 
 function tifoldTree(){
 	isGraphic = "tifoldTree";
-	console.log("Graphic:"+isGraphic);
+	if(comment_script) console.log("Graphic:"+isGraphic);
 
 	var divW=0
 	for(var i =0;i<4;i++){
@@ -513,7 +538,7 @@ function tifoldTree(){
 //Grafico em barras
 function barGraphic(){	var question = questionNum;
 	isGraphic = "barGraphic";
-	console.log("Graphic:"+isGraphic);
+	if(comment_script) console.log("Graphic:"+isGraphic);
 	var divW=0
 	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
@@ -535,7 +560,7 @@ function barGraphic(){	var question = questionNum;
 function RadarGraphic(){
 	var question = questionNum;
 	isGraphic = "radarGraphic";
-	console.log("Graphic:"+isGraphic);
+	if(comment_script) console.log("Graphic:"+isGraphic);
 	var divW=0;
 	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
@@ -564,13 +589,13 @@ function RadarGraphic(){
 function pizzaGraphic(){
 	var question = questionNum;
 	isGraphic = "pizzaGraphic";
-	console.log("Graphic:"+isGraphic);
+	if(comment_script) console.log("Graphic:"+isGraphic);
 	var divW=0
 	for(var i =0;i<4;i++){
 		if(semestre[i]!=null)
 			divW++;
 	}
-	console.log("Pizza graphics"+divW)
+	if(comment_script) console.log("Pizza graphics"+divW)
 
 	var width=winWidth*((divW>=2)?0.49:1);
 	var height=winHeight*((divW>2)?0.49:1);
@@ -594,12 +619,4 @@ function grafPercWH(grafs){
 		cssAlter.innerHTML=strin;
 	}
 }
-/*function grafPercW(perc){
-	var cssAlter = document.getElementById("JsAlterGraphicPerc");
-	cssAlter.innerHTML=".graphic{width:"+perc+"%}";
-}
-function grafPercH(perc){
-	var cssAlter = document.getElementById("JsAlterGraphicPerc");
-	cssAlter.innerHTML=".graphic{height:"+perc+"%}";
-}*/
 

@@ -1,3 +1,4 @@
+var comment_draw = false;
 function drawTreemap(i,semest,width,height) {
 	var margin = {top: 40, right: 10, bottom: 10, left: 10};
 	var treemap = d3.layout.treemap()
@@ -14,11 +15,11 @@ function drawTreemap(i,semest,width,height) {
 	.style("position", "relative");
 	//if (error) throw error;
 	var root = eval(uneval(jsonData[semest]));
-	console.log(treemap.nodes);
-	console.log(div[0]);
-	console.log("drawTree----Posi:"+i)
-	console.log("drawTree----Object:");
-	console.log(root)
+	if(comment_draw) console.log(treemap.nodes);
+	if(comment_draw) console.log(div[0]);
+	if(comment_draw) console.log("drawTree----Posi:"+i)
+	if(comment_draw) console.log("drawTree----Object:");
+	if(comment_draw) console.log(root)
 	var node = div.datum(root).selectAll(".node")
 	.data(treemap.nodes)
 	.enter().append("div")
@@ -29,7 +30,7 @@ function drawTreemap(i,semest,width,height) {
 	.text(function(d) { return d.children ? null : ""; });
 
 	v=div;
-	console.log("Entrou");
+	if(comment_draw) console.log("Entrou");
 
     if (rotulo==0) { 
     	node.append("text")
@@ -158,7 +159,7 @@ function drawBarGraphic(i,semest,width,height){
 	.attr("class","graphic")
 
 	var root = eval(uneval(jsonData[semest]));
-	//console.log(semest + " - " + jsonData[semest] + " - " +root.children+" - ");
+	//if(comment_draw) console.log(semest + " - " + jsonData[semest] + " - " +root.children+" - ");
 	x.domain(root.children[questionNum].children.map(function(d) { return d.name; }));
 	y.domain([0, d3.max(root.children[questionNum].children, function(d) { return d.size; })]);
 
@@ -191,7 +192,7 @@ function drawBarGraphic(i,semest,width,height){
 }
 
 function drawPizza(i,semest,width,height){
-	console.log("WIDTH:"+width);
+	if(comment_draw) console.log("WIDTH:"+width);
 	var radius = Math.min(width, height) / 2;
 	
 	var color = d3.scale.ordinal()
@@ -293,10 +294,10 @@ var RadarChart = {
 		}
 	  }
 	}
-	cfg.maxValue = Math.max(cfg.maxValue, d3.max(d.children, function(i){console.log(i);return i.size;}));
+	cfg.maxValue = Math.max(cfg.maxValue, d3.max(d.children, function(i){if(comment_draw) console.log(i);return i.size;}));
 	//cfg.maxValue=200;
-	console.log(d);
-	console.log(cfg.maxValue)
+	if(comment_draw) console.log(d);
+	if(comment_draw) console.log(cfg.maxValue)
 	var allAxis = (d.children.map(function(i, j){return i.name}));
 	var total = allAxis.length;
 	var radius = cfg.factor*Math.min(cfg.w/2, cfg.h/2);
@@ -376,7 +377,7 @@ var RadarChart = {
 
  
 	  dataValues = [];
-	  console.log(d)
+	  if(comment_draw) console.log(d)
 	  g.selectAll(".nodes")
 		.data(d.children, function(j, i){
 		  dataValues.push([
@@ -386,99 +387,42 @@ var RadarChart = {
 		});
 	  dataValues.push(dataValues[0]);
 	  v=dataValues;
-	  console.log(dataValues);
+	  if(comment_draw) console.log(dataValues);
 	  g.selectAll(".area")
-					 .data([dataValues])
-					 .enter()
-					 .append("polygon")
-					 .attr("class", "radar-chart-serie"+series)
-					 .style("stroke-width", "2px")
-					 .style("stroke", cfg.color(series))
-					 .attr("points",function(d) {
-					 	 console.log(d)
-						 var str="";
-						 
-						 console.log(d);
-						 for(var pti=0;pti<d.length;pti++){
-							 str=str+d[pti][0]+","+d[pti][1]+" ";
-						 }
-						 return str;
-					  })
-					 .style("fill", function(j, i){return cfg.color(series)})
-					 .style("fill-opacity", cfg.opacityArea)
-					 .on('mouseover', function (d){
-										z = "polygon."+d3.select(this).attr("class");
-										g.selectAll("polygon")
-										 .transition(200)
-										 .style("fill-opacity", 0.1); 
-										g.selectAll(z)
-										 .transition(200)
-										 .style("fill-opacity", .7);
-									  })
-					 .on('mouseout', function(){
-										g.selectAll("polygon")
-										 .transition(200)
-										 .style("fill-opacity", cfg.opacityArea);
-					 });
+		 .data([dataValues])
+		 .enter()
+		 .append("polygon")
+		 .attr("class", "radar-chart-serie"+series)
+		 .style("stroke-width", "2px")
+		 .style("stroke", cfg.color(series))
+		 .attr("points",function(d) {
+		 	 if(comment_draw) console.log(d)
+			 var str="";
+			 
+			 if(comment_draw) console.log(d);
+			 for(var pti=0;pti<d.length;pti++){
+				 str=str+d[pti][0]+","+d[pti][1]+" ";
+			 }
+			 return str;
+		  })
+		 .style("fill", function(j, i){return cfg.color(series)})
+		 .style("fill-opacity", cfg.opacityArea)
+		 .on('mouseover', function (d){
+							z = "polygon."+d3.select(this).attr("class");
+							g.selectAll("polygon")
+							 .transition(200)
+							 .style("fill-opacity", 0.1); 
+							g.selectAll(z)
+							 .transition(200)
+							 .style("fill-opacity", .7);
+						  })
+		 .on('mouseout', function(){
+							g.selectAll("polygon")
+							 .transition(200)
+							 .style("fill-opacity", cfg.opacityArea);
+		 });
 	  series++;
 	series=0;
-
-	  /*g.selectAll(".nodes")
-		.data(d.children).enter()
-		.append("svg:circle")
-		.attr("class", "radar-chart-serie"+series)
-		.attr('r', cfg.radius)
-		.attr("alt", function(j){return Math.max(j.value, 0)})
-		.attr("cx", function(j, i){
-		  dataValues.push([
-			cfg.w/2*(1-(parseFloat(Math.max(j.size, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-			cfg.h/2*(1-(parseFloat(Math.max(j.size, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
-		]);
-		return cfg.w/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total));
-		})
-		.attr("cy", function(j, i){
-		  return cfg.h/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total));
-		})
-		.attr("data-id", function(j){return j.axis})
-		.style("fill", cfg.color(series)).style("fill-opacity", .9)
-		.on('mouseover', function (d){
-					newX =  parseFloat(d3.select(this).attr('cx')) - 10;
-					newY =  parseFloat(d3.select(this).attr('cy')) - 5;
-					
-					tooltip
-						.attr('x', newX)
-						.attr('y', newY)
-						.text(Format(d.value))
-						.transition(200)
-						.style('opacity', 1);
-						
-					z = "polygon."+d3.select(this).attr("class");
-					g.selectAll("polygon")
-						.transition(200)
-						.style("fill-opacity", 0.1); 
-					g.selectAll(z)
-						.transition(200)
-						.style("fill-opacity", .7);
-				  })
-		.on('mouseout', function(){
-					tooltip
-						.transition(200)
-						.style('opacity', 0);
-					g.selectAll("polygon")
-						.transition(200)
-						.style("fill-opacity", cfg.opacityArea);
-				  })
-		.append("svg:title")
-		.text(function(j){return Math.max(j.value, 0)});
-
-	  series++;
-
-	//Tooltip
-	tooltip = g.append('text')
-			   .style('opacity', 0)
-			   .style('font-family', 'sans-serif')
-			   .style('font-size', '13px');
-	*/
   }
 };
 
